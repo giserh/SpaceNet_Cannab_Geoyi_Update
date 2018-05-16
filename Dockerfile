@@ -31,7 +31,8 @@ RUN conda install opencv \
     tqdm \
     shapely \
     tensorflow-gpu \
-    keras
+    keras \
+    scikit-learn
 
 
 WORKDIR /work
