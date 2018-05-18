@@ -40,14 +40,6 @@ def preprocess_inputs_std(x, city_id):
 
 
 # cities = ['Vegas', 'Paris', 'Shanghai', 'Khartoum']
-cities = ['Vegas','Paris']
-
-city_id = -1
-
-all_files = []
-all_pan_files = []
-all_city_inp = []
-all_masks = []
 
 def rotate_image(image, angle, scale):
     image_center = tuple(np.array(image.shape[:2])/2)
@@ -133,6 +125,14 @@ def val_data_generator(val_idx, batch_size, validation_steps):
                         break
 
 if __name__ == '__main__':
+
+    cities = ['Vegas','Paris']
+    city_id = -1
+    all_files = []
+    all_pan_files = []
+    all_city_inp = []
+    all_masks = []
+
     t0 = timeit.default_timer()
 
     fold_nums = [0, 1]
@@ -142,7 +142,6 @@ if __name__ == '__main__':
     #     train_folders.append(sys.argv[i])
     city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
                          Paris = 'AOI_3_Paris_Roads_Train')
-
     for city,d in city_datasets.items():
         masks_folder = r'/wdata/{}/masks_smallest'.format(d)
         models_folder = r'/wdata/{}/nn_models'.format(d)
@@ -157,7 +156,8 @@ if __name__ == '__main__':
                 cid = cities.index(img_id.split('_')[2])
                 cinp[cid] = 1.0
                 all_city_inp.append(cinp)
-                all_masks.append(path.join(masks_folder, cities[cid], '{0}{1}'.format(img_id, '.png')))
+                all_masks.append(path.join(masks_folder, '{0}{1}'.format(img_id, '.png')))
+    print(all_files[:2], all_pan_files[:2], all_city_inp[:2], all_masks[:2])
     all_files = np.asarray(all_files)
     all_pan_files = np.asarray(all_pan_files)
     all_city_inp = np.asarray(all_city_inp)
