@@ -112,8 +112,6 @@ def val_data_generator(val_idx, batch_size, validation_steps):
                         break
 
 if __name__ == '__main__':
-    masks_folder = r'/wdata/masks_small'
-    models_folder = r'/wdata/nn_models'
     cities = ['Vegas','Paris']
     city_id = -1
     all_files = []
@@ -131,7 +129,7 @@ if __name__ == '__main__':
     city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
                          Paris = 'AOI_3_Paris_Roads_Train')
     for city,d in city_datasets.items():
-        masks_folder = r'/wdata/{}/masks_smallest'.format(d)
+        masks_folder = r'/wdata/{}/masks_small'.format(d)
         models_folder = r'/wdata/{}/nn_models'.format(d)
         if not path.isdir(models_folder):
             mkdir(models_folder)
