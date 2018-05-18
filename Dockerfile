@@ -25,7 +25,7 @@ RUN echo 'export PATH=/opt/conda/bin:$PATH' > /etc/profile.d/conda.sh && \
 
 ENV PATH /opt/conda/bin:$PATH
 
-RUN apt-get update && apt-get install -y libglu1
+RUN apt-get update && apt-get install -y libglu1 vim
 
 RUN conda install opencv \
     tqdm \

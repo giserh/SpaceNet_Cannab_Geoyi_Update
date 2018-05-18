@@ -27,6 +27,7 @@ stds = [[75.42, 177.98, 288.81, 250.24, 260.55, 220.09, 299.67, 191.47, 285.25],
         [16.4, 45.69, 79.42, 61.91, 99.64, 81.17, 210.34, 106.31, 80.89],
         [35.23, 58, 89.42, 115.7, 90.45, 109.5, 144.61, 136.77, 99.11],
         [37.9, 59.95, 99.56, 131.14, 96.26, 107.79, 98.77, 92.2, 107.9]]
+
 def preprocess_inputs_std(x, city_id):
     zero_msk = (x == 0)
     x = np.asarray(x, dtype='float32')
@@ -36,11 +37,10 @@ def preprocess_inputs_std(x, city_id):
     x[zero_msk] = 0
     return x
 
-masks_folder = r'/wdata/AOI_3_Paris_Roads_Train/masks_smallest'
-models_folder = r'/wdata/AOI_3_Paris_Roads_Train/nn_models'
+
 
 # cities = ['Vegas', 'Paris', 'Shanghai', 'Khartoum']
-cities = ['Paris']
+cities = ['Vegas','Paris']
 
 city_id = -1
 
@@ -137,14 +137,17 @@ if __name__ == '__main__':
 
     fold_nums = [0, 1]
 
-    train_folders = []
-    for i in range(1, len(sys.argv)):
-        train_folders.append(sys.argv[i])
+    # train_folders = []
+    # for i in range(1, len(sys.argv)):
+    #     train_folders.append(sys.argv[i])
+    city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
+                         Paris = 'AOI_3_Paris_Roads_Train')
 
-    if not path.isdir(models_folder):
-        mkdir(models_folder)
-
-    for d in train_folders:
+    for city,d in city_datasets.items():
+        masks_folder = r'/wdata/{}/masks_smallest'.format(d)
+        models_folder = r'/wdata/{}/nn_models'.format(d)
+        if not path.isdir(models_folder):
+            mkdir(models_folder)
         for f in sorted(listdir(path.join(d, 'MUL'))):
             if path.isfile(path.join(d, 'MUL', f)) and '.tif' in f:
                 img_id = f.split('MUL_')[1].split('.')[0]

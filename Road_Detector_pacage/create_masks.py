@@ -19,8 +19,8 @@ def create_mask(city, data_dir):
     df = pd.read_csv(path.join(os.getcwd(),'wdata', data_dir,'summaryData', '{0}.csv'.format(data_dir)))
     # city = df['ImageId'].values[0].split('_')[2]
     print('creating masks for', city)
-    if not path.isdir(path.join(masks_folder, city)):
-        mkdir(path.join(masks_folder, city))
+    # if not path.isdir(path.join(masks_folder, city)):
+    #     mkdir(path.join(masks_folder, city))
     for img_id in tqdm(df['ImageId'].unique()):
         lines = [loads(s) for s in df[df['ImageId'] == img_id]['WKT_Pix']]
         img = np.zeros((sz, sz), np.uint8)
@@ -66,7 +66,7 @@ def create_mask(city, data_dir):
         img2 = img2[..., np.newaxis]
         img3 = img3[..., np.newaxis]
         img = np.concatenate([img, img2, img3], axis=2)
-        cv2.imwrite(path.join(masks_folder, city, '{0}{1}'.format(img_id, '.png')), img, [cv2.IMWRITE_PNG_COMPRESSION, 9])
+        cv2.imwrite(path.join(masks_folder, '{0}{1}'.format(img_id, '.png')), img, [cv2.IMWRITE_PNG_COMPRESSION, 9])
 
 if __name__ == '__main__':
     t0 = timeit.default_timer()
