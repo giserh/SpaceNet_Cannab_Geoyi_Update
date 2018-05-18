@@ -128,19 +128,19 @@ if __name__ == '__main__':
         models_folder = r'/wdata/{}/nn_models'.format(d)
         if not path.isdir(models_folder):
             mkdir(models_folder)
-        for f in sorted(listdir(path.join(d, 'MUL'))):
-            if path.isfile(path.join(d, 'MUL', f)) and '.tif' in f:
-                img_id = f.split('MUL_')[1].split('.')[0]
-                all_files.append(path.join(d, 'MUL', f))
-                all_pan_files.append(path.join(d, 'PAN', 'PAN_{0}.tif'.format(img_id)))
+        for f in sorted(listdir(path.join(d, 'MUL-PanSharpen'))):
+            if path.isfile(path.join(d, 'MUL-PanSharpen', f)) and '.tif' in f:
+                img_id = f.split('PanSharpen_')[1].split('.')[0]
+                all_files.append(path.join(d, 'MUL-PanSharpen', f))
                 cinp = np.zeros((4,))
                 cid = cities.index(img_id.split('_')[2])
                 cinp[cid] = 1.0
                 all_city_inp.append(cinp)
-                all_masks.append(path.join(masks_folder, '{0}{1}'.format(img_id, '.png')))
-    print(all_files[:2], all_pan_files[:2], all_city_inp[:2], all_masks[:2])
+                msk = cv2.imread(path.join(masks_folder, '{0}{1}'.format(img_id, '.png')), cv2.IMREAD_UNCHANGED)[..., 0]
+                msk = (msk > 127) * 1
+                msk = msk.astype('uint8')
+                all_masks.append(msk)
     all_files = np.asarray(all_files)
-    all_pan_files = np.asarray(all_pan_files)
     all_city_inp = np.asarray(all_city_inp)
     all_masks = np.asarray(all_masks)
 
