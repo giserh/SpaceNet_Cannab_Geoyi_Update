@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 from os import path, listdir, mkdir
 import numpy as np
@@ -136,15 +137,15 @@ if __name__ == '__main__':
     city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
                          Paris = 'AOI_3_Paris_Roads_Train')
     for city,d in city_datasets.items():
-        masks_folder = r'/wdata/{}/masks_smallest'.format(d)
-        models_folder = r'/wdata/{}/nn_models'.format(d)
+        masks_folder = os.path.join(os.getcwd(),'wdata/{}/masks_smallest'.format(d))
+        models_folder = os.path.join(os.getcwd(),'wdata/{}/nn_models'.format(d))
         if not path.isdir(models_folder):
             mkdir(models_folder)
-        for f in sorted(listdir(path.join(d, 'MUL'))):
-            if path.isfile(path.join(d, 'MUL', f)) and '.tif' in f:
+        for f in sorted(listdir(path.join('wdata', d, 'MUL'))):
+            if path.isfile(path.join('wdata', d, 'MUL', f)) and '.tif' in f:
                 img_id = f.split('MUL_')[1].split('.')[0]
-                all_files.append(path.join(d, 'MUL', f))
-                all_pan_files.append(path.join(d, 'PAN', 'PAN_{0}.tif'.format(img_id)))
+                all_files.append(path.join('wdata', d, 'MUL', f))
+                all_pan_files.append(path.join('wdata', d, 'PAN', 'PAN_{0}.tif'.format(img_id)))
                 cinp = np.zeros((4,))
                 cid = cities.index(img_id.split('_')[2])
                 cinp[cid] = 1.0

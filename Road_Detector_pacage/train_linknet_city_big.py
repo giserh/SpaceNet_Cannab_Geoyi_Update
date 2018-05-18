@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 from os import path, listdir, mkdir
 import numpy as np
@@ -135,14 +136,14 @@ if __name__ == '__main__':
                          Paris = 'AOI_3_Paris_Roads_Train')
 
     for city,d in city_datasets.items():
-        masks_folder = r'/wdata/{}/masks_22'.format(d)
-        models_folder = r'/wdata/{}/nn_models'.format(d)
+        masks_folder = os.path.join(os.getcwd(),'wdata/{}/masks_22'.format(d))
+        models_folder = os.path.join(os.getcwd(),'wdata/{}/nn_models'.format(d))
         if not path.isdir(models_folder):
             mkdir(models_folder)
-        for f in sorted(listdir(path.join(d, 'MUL-PanSharpen'))):
-            if path.isfile(path.join(d, 'MUL-PanSharpen', f)) and '.tif' in f:
+        for f in sorted(listdir(path.join('wdata', d, 'MUL-PanSharpen'))):
+            if path.isfile(path.join('wdata', d, 'MUL-PanSharpen', f)) and '.tif' in f:
                 img_id = f.split('PanSharpen_')[1].split('.')[0]
-                all_files.append(path.join(d, 'MUL-PanSharpen', f))
+                all_files.append(path.join('wdata', d, 'MUL-PanSharpen', f))
                 cinp = np.zeros((4,))
                 cid = cities.index(img_id.split('_')[2])
                 cinp[cid] = 1.0
