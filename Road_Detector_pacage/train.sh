@@ -8,14 +8,14 @@
 # wait
 # echo "Masks created"
 
-CUDA_VISIBLE_DEVICES="0" python train_resnet_unet_smallest.py "$@" &> wdata/resnet_unet_smallest.out &
-CUDA_VISIBLE_DEVICES="1" python train_inception_unet_smallest.py "$@" &> wdata/inception_unet_smallest.out &
-CUDA_VISIBLE_DEVICES="2" python train_inception3_unet_520.py "$@" &> wdata/inception3_unet_520.out &
-CUDA_VISIBLE_DEVICES="3" python train_vgg.py "$@" | tee wdata/vgg_pretrain.out
-CUDA_VISIBLE_DEVICES="4" python train_linknet_520.py "$@" &> wdata/linknet_520.out &
-CUDA_VISIBLE_DEVICES="5" python train_inc_v2_unet_520.py "$@" &> wdata/inc_v2_unet_520.out &
-CUDA_VISIBLE_DEVICES="6" python tune_vgg_city.py "$@" &> tee wdata/vgg_tune.out &
-CUDA_VISIBLE_DEVICES="7" python train_linknet_city_big.py "$@" | tee wdata/linknet_big.out
+nohup CUDA_VISIBLE_DEVICES="0" python train_resnet_unet_smallest.py "$@" &> wdata/resnet_unet_smallest.out &
+nohup CUDA_VISIBLE_DEVICES="1" python train_inception_unet_smallest.py "$@" &> wdata/inception_unet_smallest.out &
+nohup CUDA_VISIBLE_DEVICES="2" python train_inception3_unet_520.py "$@" &> wdata/inception3_unet_520.out &
+nohup CUDA_VISIBLE_DEVICES="3" python train_vgg.py "$@" | tee wdata/vgg_pretrain.out
+nohup CUDA_VISIBLE_DEVICES="4" python train_linknet_520.py "$@" &> wdata/linknet_520.out &
+nohup CUDA_VISIBLE_DEVICES="5" python train_inc_v2_unet_520.py "$@" &> wdata/inc_v2_unet_520.out &
+nohup CUDA_VISIBLE_DEVICES="6" python tune_vgg_city.py "$@" &> tee wdata/vgg_tune.out &
+nohup CUDA_VISIBLE_DEVICES="7" python train_linknet_city_big.py "$@" | tee wdata/linknet_big.out
 echo "Waiting all GPUs to complete..."
 wait
 
