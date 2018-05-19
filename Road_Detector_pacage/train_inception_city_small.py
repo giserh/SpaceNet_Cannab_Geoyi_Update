@@ -134,9 +134,6 @@ if __name__ == '__main__':
 
     fold_nums = [0, 1]
 
-    # train_folders = []
-    # for i in range(1, len(sys.argv)):
-    #     train_folders.append(sys.argv[i])
     city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
                          Paris = 'AOI_3_Paris_Roads_Train')
     for city,d in city_datasets.items():
@@ -168,8 +165,7 @@ if __name__ == '__main__':
 
         if it not in fold_nums:
             continue
-
-        for cid in [0, 2, 3]:
+        for cid, city_ in enumerate(cities):
             city_id = cid
             train_idx = []
             val_idx = []

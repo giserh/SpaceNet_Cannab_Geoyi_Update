@@ -152,7 +152,7 @@ if __name__ == '__main__':
         if it not in fold_nums:
             continue
 
-        for cid in [1, 2, 3]:
+        for cid, city_ in enumerate(cities):
             city_id = cid
             train_idx = []
             val_idx = []
