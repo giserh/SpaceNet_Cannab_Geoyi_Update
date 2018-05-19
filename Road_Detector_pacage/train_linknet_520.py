@@ -143,8 +143,8 @@ if __name__ == '__main__':
                          Paris = 'AOI_3_Paris_Roads_Train')
 
     for city,d in city_datasets.items():
-        masks_folder = os.path.join(os.getcwd(),'/wdata/{}/masks_520_9'.format(d))
-        models_folder = os.path.join(os.getcwd(),'/wdata/{}/nn_models'.format(d))
+        masks_folder = os.path.join(os.getcwd(),'wdata/{}/masks_520_9'.format(d))
+        models_folder = os.path.join(os.getcwd(),'wdata/{}/nn_models'.format(d))
         if not path.isdir(models_folder):
             mkdir(models_folder)
         for f in sorted(listdir(path.join('wdata', d, 'MUL'))):
