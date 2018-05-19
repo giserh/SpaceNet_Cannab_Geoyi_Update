@@ -144,17 +144,17 @@ if __name__ == '__main__':
             if path.isfile(path.join('wdata', d, 'MUL-PanSharpen', f)) and '.tif' in f:
                 img_id = f.split('PanSharpen_')[1].split('.')[0]
                 all_files.append(path.join('wdata', d, 'MUL-PanSharpen', f))
+                all_pan_files.append(path.join('wdata', d, 'PAN', 'PAN_{0}.tif'.format(img_id)))
                 cinp = np.zeros((4,))
                 cid = cities.index(img_id.split('_')[2])
                 cinp[cid] = 1.0
                 all_city_inp.append(cinp)
-                msk = cv2.imread(path.join(masks_folder, '{0}{1}'.format(img_id, '.png')), cv2.IMREAD_UNCHANGED)[..., 0]
-                msk = (msk > 127) * 1
-                msk = msk.astype('uint8')
-                all_masks.append(msk)
+                all_masks.append(path.join(masks_folder, '{0}{1}'.format(img_id, '.png')))
     all_files = np.asarray(all_files)
+    all_pan_files = np.asarray(all_pan_files)
     all_city_inp = np.asarray(all_city_inp)
     all_masks = np.asarray(all_masks)
+
 
     batch_size = 4
     it = -1
