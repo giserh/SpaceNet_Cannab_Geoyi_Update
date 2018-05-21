@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 from os import path, listdir, mkdir
 import numpy as np
@@ -85,7 +86,7 @@ if __name__ == '__main__':
                     cid = cinp.argmax()
                     if cid in ignored_cities:
                         continue
-                    fpath = path.join(d, 'MUL', f)
+                    fpath = path.join('wdata', d, 'MUL', f)
                     img = skimage.io.imread(fpath, plugin='tifffile')
                     pan = skimage.io.imread(path.join('wdata', d, 'PAN', 'PAN_{0}.tif'.format(img_id)), plugin='tifffile')
                     pan = cv2.resize(pan, (325, 325))
