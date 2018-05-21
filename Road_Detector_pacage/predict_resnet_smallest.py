@@ -9,11 +9,11 @@ import tensorflow as tf
 tf.set_random_seed(1)
 import timeit
 import cv2
-from linknet import get_resnet50_linknet
+from models import get_resnet_unet
 import skimage.io
 from tqdm import tqdm
 
-input_shape = (544, 544)
+input_shape = (352, 352)
 
 means = [[290.42, 446.84, 591.88, 442.45, 424.66, 418.13, 554.13, 354.34, 566.86],
          [178.33, 260.14, 287.4, 161.44, 211.46, 198.83, 453.27, 228.99, 242.67],
@@ -34,20 +34,18 @@ def preprocess_inputs_std(x, city_id):
 
 
 
-# ignored_cities = []
+# ignored_cities = [0, 3]
 
 if __name__ == '__main__':
     models_folder = 'wdata/AOI_3_Paris_Roads_Train/nn_models'
     pred_folder = 'wdata/predictions'
-    model_name = 'linknet_520'
+
+    model_name = 'resnet_smallest'
 
     city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
                          Paris = 'AOI_3_Paris_Roads_Train')
     cities = city_datasets.values()
 
-    model_name = 'linknet_520'
-
-    # cities = ['Vegas', 'Paris', 'Shanghai', 'Khartoum']
     t0 = timeit.default_timer()
     #
     # test_folders = []
@@ -68,33 +66,32 @@ if __name__ == '__main__':
             mkdir(path.join(pred_folder, model_name, str(it)))
 
         for i, city in enumerate(city_datasets):
-            # if i in ignored_cities or not path.isfile(path.join(models_folder, 'linknet_520_model_weights4_{0}_{1}.h5'.format(cities[i], it))):
+            # if i in ignored_cities or not path.isfile(path.join(models_folder, 'resnet_smallest_model_weights4_{0}_{1}.h5'.format(cities[i], it))):
             #     models.append(None)
             #     continue
-            if not path.isdir(path.join(path.join(pred_folder, model_name, str(it), cities[i]))):
-                mkdir(path.join(path.join(pred_folder, model_name, str(it), cities[i])))
-            model = get_resnet50_linknet(input_shape, weights=None)
-            model.load_weights(path.join(models_folder, 'linknet_520_model_weights4_{0}_{1}.h5'.format(cities[i], it)))
+            if not path.isdir(path.join(path.join(pred_folder, model_name, str(it), city))):
+                mkdir(path.join(path.join(pred_folder, model_name, str(it), city)))
+            model = get_resnet_unet(input_shape, weights=None)
+            model.load_weights(path.join(models_folder, 'resnet_smallest_model_weights4_{0}_{1}.h5'.format(city, it)))
             models.append(model)
 
         print('Predictiong fold', it)
         for city, d in city_datasets.items():
-            for f in tqdm(sorted(listdir(path.join('wdata',d, 'MUL')))):
-                if path.isfile(path.join('wdata',d, 'MUL', f)) and '.tif' in f:
+            for f in tqdm(sorted(listdir(path.join('wdata', d, 'MUL')))):
+                if path.isfile(path.join('wdata', d, 'MUL', f)) and '.tif' in f:
                     img_id = f.split('MUL_')[1].split('.')[0]
                     cinp = np.zeros((4,))
                     cinp[cities.index(img_id.split('_')[2])] = 1.0
                     cid = cinp.argmax()
-                    # if cid in ignored_cities:
-                    #     continue
-                    fpath = path.join('wdata', d, 'MUL', f)
+                    if cid in ignored_cities:
+                        continue
+                    fpath = path.join(d, 'MUL', f)
                     img = skimage.io.imread(fpath, plugin='tifffile')
-                    img = cv2.resize(img, (520, 520))
                     pan = skimage.io.imread(path.join('wdata', d, 'PAN', 'PAN_{0}.tif'.format(img_id)), plugin='tifffile')
-                    pan = cv2.resize(pan, (520, 520))
+                    pan = cv2.resize(pan, (325, 325))
                     pan = pan[..., np.newaxis]
                     img = np.concatenate([img, pan], axis=2)
-                    img = cv2.copyMakeBorder(img, 12, 12, 12, 12, cv2.BORDER_REFLECT_101)
+                    img = cv2.copyMakeBorder(img, 13, 14, 13, 14, cv2.BORDER_REFLECT_101)
                     inp = []
                     inp.append(img)
                     inp.append(np.rot90(img, k=1))
@@ -103,7 +100,7 @@ if __name__ == '__main__':
                     pred = models[cid].predict(inp)
                     mask = pred[0] + np.rot90(pred[1], k=3)
                     mask /= 2
-                    mask = mask[12:532, 12:532, ...]
+                    mask = mask[13:338, 13:338, ...]
                     mask = mask * 255
                     mask = mask.astype('uint8')
                     cv2.imwrite(path.join(pred_folder, model_name, str(it), city, '{0}.png'.format(img_id)), mask, [cv2.IMWRITE_PNG_COMPRESSION, 9])

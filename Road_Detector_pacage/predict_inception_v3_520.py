@@ -57,7 +57,7 @@ if __name__ == '__main__':
     #     test_folders.append(sys.argv[i])
 
     if not path.isdir(pred_folder):
-        mkdir(pred_folder)
+        mkdir(os.path.join(os.getcwd(),pred_folder))
 
     if not path.isdir(path.join(pred_folder, model_name)):
         mkdir(path.join(pred_folder, model_name))
