@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
                          Paris = 'AOI_3_Paris_Roads_Train')
-                         
+
     cities = ['Vegas', 'Paris']
     # cities = city_datasets.values()
 
@@ -86,8 +86,7 @@ if __name__ == '__main__':
                     cinp = np.zeros((4,))
                     cinp[cities.index(img_id.split('_')[2])] = 1.0
                     cid = cinp.argmax()
-                    if cid in ignored_cities:
-                        continue
+
                     fpath = path.join('wdata', d, 'MUL', f)
                     img = skimage.io.imread(fpath, plugin='tifffile')
                     pan = skimage.io.imread(path.join('wdata', d, 'PAN', 'PAN_{0}.tif'.format(img_id)), plugin='tifffile')
