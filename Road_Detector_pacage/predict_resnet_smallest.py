@@ -78,7 +78,7 @@ if __name__ == '__main__':
                     img_id = f.split('MUL_')[1].split('.')[0]
                     cinp = np.zeros((4,))
                     cinp[cities.index(img_id.split('_')[2])] = 1.0
-                    cid = cinp.argmax()d
+                    cid = cinp.argmax()
                     fpath = path.join(d, 'MUL', f)
                     img = skimage.io.imread(fpath, plugin='tifffile')
                     pan = skimage.io.imread(path.join('wdata', d, 'PAN', 'PAN_{0}.tif'.format(img_id)), plugin='tifffile')
