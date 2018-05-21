@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 from os import path, listdir, mkdir
 import numpy as np
@@ -42,12 +43,18 @@ if __name__ == '__main__':
 
     model_name = 'resnet_smallest'
 
-    city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Test_Public',
-                         Paris = 'AOI_3_Paris_Roads_Test_Public')
-    # cities = city_datasets.values()
+    city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
+                         Paris = 'AOI_3_Paris_Roads_Train')
+                         
     cities = ['Vegas', 'Paris']
+    # cities = city_datasets.values()
 
     t0 = timeit.default_timer()
+    #
+    # test_folders = []
+    #
+    # for i in range(1, len(sys.argv) - 1):
+    #     test_folders.append(sys.argv[i])
 
     if not path.isdir(pred_folder):
         mkdir(os.path.join(os.getcwd(),pred_folder))
@@ -79,7 +86,9 @@ if __name__ == '__main__':
                     cinp = np.zeros((4,))
                     cinp[cities.index(img_id.split('_')[2])] = 1.0
                     cid = cinp.argmax()
-                    fpath = path.join(d, 'MUL', f)
+                    if cid in ignored_cities:
+                        continue
+                    fpath = path.join('wdata', d, 'MUL', f)
                     img = skimage.io.imread(fpath, plugin='tifffile')
                     pan = skimage.io.imread(path.join('wdata', d, 'PAN', 'PAN_{0}.tif'.format(img_id)), plugin='tifffile')
                     pan = cv2.resize(pan, (325, 325))
