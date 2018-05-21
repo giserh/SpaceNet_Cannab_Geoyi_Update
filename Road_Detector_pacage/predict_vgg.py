@@ -22,13 +22,6 @@ def preprocess_inputs(x):
     x[zero_msk] = 0
     return x
 
-models_folder = '/wdata/nn_models'
-pred_folder = '/wdata/predictions'
-model_name = 'vgg_big'
-
-cities = ['Vegas', 'Paris', 'Shanghai', 'Khartoum']
-
-ignored_cities = [0]
 
 if __name__ == '__main__':
     models_folder = 'wdata/AOI_3_Paris_Roads_Train/nn_models'
@@ -41,10 +34,6 @@ if __name__ == '__main__':
 
     t0 = timeit.default_timer()
 
-    # test_folders = []
-    #
-    # for i in range(1, len(sys.argv) - 1):
-    #     test_folders.append(sys.argv[i])
 
     if not path.isdir(pred_folder):
         mkdir(os.path.join(os.getcwd(),pred_folder))
@@ -59,9 +48,7 @@ if __name__ == '__main__':
             mkdir(path.join(pred_folder, model_name, str(it)))
 
         for i, city in enumerate(city_datasets):
-            # if i in ignored_cities or not path.isfile(path.join(models_folder, 'vgg_model3_weights2_{0}_{1}.h5'.format(cities[i], it))):
-            #     models.append(None)
-            #     continue
+
             if not path.isdir(path.join(path.join(pred_folder, model_name, str(it), city))):
                 mkdir(path.join(path.join(pred_folder, model_name, str(it), city)))
             model = get_vgg_unet(input_shape, weights=None)
@@ -76,8 +63,6 @@ if __name__ == '__main__':
                     cinp = np.zeros((4,))
                     cinp[cities.index(img_id.split('_')[2])] = 1.0
                     cid = cinp.argmax()
-                    # if cid in ignored_cities:
-                    #     continue
                     fpath = path.join('wdata',d, 'MUL-PanSharpen', f)
                     img = skimage.io.imread(fpath, plugin='tifffile')
                     img = cv2.copyMakeBorder(img, 22, 22, 22, 22, cv2.BORDER_REFLECT_101)
