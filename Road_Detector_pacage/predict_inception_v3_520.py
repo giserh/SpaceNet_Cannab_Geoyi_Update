@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
         print('Predictiong fold', it)
         for city, d in city_datasets.items():
-            for f in tqdm(sorted(listdir('wdata', path.join(d, 'MUL')))):
+            for f in tqdm(sorted(listdir(path.join('wdata',d, 'MUL')))):
                 if path.isfile(path.join('wdata', d, 'MUL', f)) and '.tif' in f:
                     img_id = f.split('MUL_')[1].split('.')[0]
                     cinp = np.zeros((4,))
