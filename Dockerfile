@@ -39,7 +39,3 @@ WORKDIR /work
 
 # copy entire directory where docker file is into docker container at /work
 COPY . /work/
-
-RUN chmod 777 ~/Road_Detector_pacage/train.sh && \
-#     chmod 777 test.sh && \
-#     chmod 777 download_models.sh
