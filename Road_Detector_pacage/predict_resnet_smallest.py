@@ -41,10 +41,10 @@ if __name__ == '__main__':
     models_folder = 'wdata/AOI_3_Paris_Roads_Train/nn_models'
     pred_folder = 'wdata/predictions'
 
-    model_name = 'resnet_smallest'
+    model_name = 'resnet_smallest_Test'
 
-    city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
-                         Paris = 'AOI_3_Paris_Roads_Train')
+    city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Test_Public',
+                         Paris = 'AOI_3_Paris_Roads_Test_Public')
 
     cities = ['Vegas', 'Paris']
     # cities = city_datasets.values()

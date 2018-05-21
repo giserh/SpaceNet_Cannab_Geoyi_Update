@@ -41,8 +41,8 @@ if __name__ == '__main__':
     model_name = 'inception_520'
 
     cities = ['Vegas', 'Paris']
-    city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
-                         Paris = 'AOI_3_Paris_Roads_Train')
+    city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Test_Public',
+                         Paris = 'AOI_3_Paris_Roads_Test_Public')
 
     # ignored_cities = [3]
     t0 = timeit.default_timer()
