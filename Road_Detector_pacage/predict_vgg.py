@@ -31,7 +31,8 @@ if __name__ == '__main__':
 
     city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
                          Paris = 'AOI_3_Paris_Roads_Train')
-    cities = city_datasets.values()
+    cities = ['Vegas', 'Paris']
+    # cities = city_datasets.values()
 
     t0 = timeit.default_timer()
 
