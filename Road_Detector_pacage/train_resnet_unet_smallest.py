@@ -19,20 +19,23 @@ import skimage.io
 import keras.backend as K
 
 input_shape = (320, 320)
+channel_no = 3
 
-means = [[290.42, 446.84, 591.88, 442.45, 424.66, 418.13, 554.13, 354.34, 566.86],
-         [178.33, 260.14, 287.4, 161.44, 211.46, 198.83, 453.27, 228.99, 242.67],
-         [357.82, 344.64, 436.76, 452.17, 290.35, 439.7, 440.43, 393.6, 452.5],
-         [386.98, 415.74, 601.29, 755.34, 527.79, 729.95, 641, 611.41, 697.17]]
-stds = [[75.42, 177.98, 288.81, 250.24, 260.55, 220.09, 299.67, 191.47, 285.25],
-        [16.4, 45.69, 79.42, 61.91, 99.64, 81.17, 210.34, 106.31, 80.89],
-        [35.23, 58, 89.42, 115.7, 90.45, 109.5, 144.61, 136.77, 99.11],
-        [37.9, 59.95, 99.56, 131.14, 96.26, 107.79, 98.77, 92.2, 107.9]]
+# means = [[290.42, 446.84, 591.88, 442.45, 424.66, 418.13, 554.13, 354.34, 566.86],
+#          [178.33, 260.14, 287.4, 161.44, 211.46, 198.83, 453.27, 228.99, 242.67],
+#          [357.82, 344.64, 436.76, 452.17, 290.35, 439.7, 440.43, 393.6, 452.5],
+#          [386.98, 415.74, 601.29, 755.34, 527.79, 729.95, 641, 611.41, 697.17]]
+# stds = [[75.42, 177.98, 288.81, 250.24, 260.55, 220.09, 299.67, 191.47, 285.25],
+#         [16.4, 45.69, 79.42, 61.91, 99.64, 81.17, 210.34, 106.31, 80.89],
+#         [35.23, 58, 89.42, 115.7, 90.45, 109.5, 144.61, 136.77, 99.11],
+#         [37.9, 59.95, 99.56, 131.14, 96.26, 107.79, 98.77, 92.2, 107.9]]
 
+means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
+stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
 def preprocess_inputs_std(x, city_id):
     zero_msk = (x == 0)
     x = np.asarray(x, dtype='float32')
-    for i in range(9):
+    for i in range(channel_no):
         x[..., i] -= means[city_id][i]
         x[..., i] /= stds[city_id][i]
     x[zero_msk] = 0
@@ -60,7 +63,9 @@ def batch_data_generator(train_idx, batch_size):
                 pan = skimage.io.imread(all_pan_files[i], plugin='tifffile')
                 pan = cv2.resize(pan, (325, 325))
                 pan = pan[..., np.newaxis]
-                img = np.concatenate([img, pan], axis=2)
+                # img = np.concatenate([img, pan], axis=2)
+                rgb_index = [i for i in range(channel_no)]
+                img = img[:, :, rgb_index]
                 msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0]
 
                 if random.random() > 0.5:
@@ -106,7 +111,9 @@ def val_data_generator(val_idx, batch_size, validation_steps):
             pan = skimage.io.imread(all_pan_files[i], plugin='tifffile')
             pan = cv2.resize(pan, (325, 325))
             pan = pan[..., np.newaxis]
-            img0 = np.concatenate([img0, pan], axis=2)
+            # img0 = np.concatenate([img0, pan], axis=2)
+            rgb_index = [i for i in range(channel_no)]
+            img0 = img0[:, :, rgb_index]
             msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0:1]
             msk = (msk > 127) * 1
             for x0, y0 in [(0, 0)]:

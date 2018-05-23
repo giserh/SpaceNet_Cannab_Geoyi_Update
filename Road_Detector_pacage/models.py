@@ -86,7 +86,7 @@ def conv_block(prev, num_filters, kernel=(3, 3), strides=(1, 1), act='relu', pre
     return conv
 
 def get_resnet_unet(input_shape, weights='imagenet'):
-    inp = Input(input_shape + (9,))
+    inp = Input(input_shape + (3,))
 
     x = Conv2D(
         64, (7, 7), strides=(2, 2), padding='same', name='conv1')(inp)
