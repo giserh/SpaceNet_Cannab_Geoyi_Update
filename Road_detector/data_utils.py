@@ -28,8 +28,8 @@ city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
                      Paris = 'AOI_3_Paris_Roads_Train')
 city_id = -1
 
-# means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
-# stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
+means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
+stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
 
 ## define means and stds from reading data with npz format
 def means_data(data):
@@ -45,8 +45,8 @@ def stds_data(data):
     return stds
 
 def preprocess_inputs_std(x, city_id):
-    means = means_data(x)
-    stds = stds_data(x)
+    # means = means_data(x)
+    # stds = stds_data(x)
     zero_msk = (x == 0)
     x = np.asarray(x, dtype='float32')
     for i in range(channel_no):
@@ -109,9 +109,9 @@ def batch_data_generator(train_idx, batch_size):
         for i in train_idx:
             for j in range(1):
                 img = skimage.io.imread(all_files[i], plugin='tifffile')
-                pan = skimage.io.imread(all_pan_files[i], plugin='tifffile')
-                pan = cv2.resize(pan, (325, 325))
-                pan = pan[..., np.newaxis]
+                # pan = skimage.io.imread(all_pan_files[i], plugin='tifffile')
+                # pan = cv2.resize(pan, (325, 325))
+                # pan = pan[..., np.newaxis]
                 # img = np.concatenate([img, pan], axis=2)
                 rgb_index = [i for i in range(channel_no)]
                 img = img[:, :, rgb_index]
@@ -158,9 +158,9 @@ def val_data_generator(val_idx, batch_size, validation_steps):
         step_id = 0
         for i in val_idx:
             img0 = skimage.io.imread(all_files[i], plugin='tifffile')
-            pan = skimage.io.imread(all_pan_files[i], plugin='tifffile')
-            pan = cv2.resize(pan, (325, 325))
-            pan = pan[..., np.newaxis]
+            # pan = skimage.io.imread(all_pan_files[i], plugin='tifffile')
+            # pan = cv2.resize(pan, (325, 325))
+            # pan = pan[..., np.newaxis]
             # img0 = np.concatenate([img0, pan], axis=2)
             rgb_index = [i for i in range(channel_no)]
             img0 = img0[:, :, rgb_index]
