@@ -143,7 +143,7 @@ for all_train_idx, all_val_idx in kf.split(all_files):
       model.compile(loss=dice_logloss2,
                     optimizer=Adam(lr=5e-5),
                     metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
-      model_checkpoint3 = ModelCheckpoint(path.join(models_folder, '{}_smallest_model_weights3_{0}_{1}.h5'.format(model_id, cities[city_id], it)), monitor='val_dice_coef_rounded',
+      model_checkpoint3 = ModelCheckpoint(path.join(models_folder, '{}_weights3_{0}_{1}.h5'.format(model_id, cities[city_id], it)), monitor='val_dice_coef_rounded',
                                          save_best_only=True, save_weights_only=True, mode='max')
       model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
                             epochs=40, steps_per_epoch=steps_per_epoch, verbose=2,
