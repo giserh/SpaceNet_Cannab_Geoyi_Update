@@ -44,7 +44,7 @@ if model_id == 'resnet_unet':
 else:
   from inception_unet import get_inception_resnet_v2_unet
   model = get_inception_resnet_v2_unet(input_shape)
-  
+
 if not path.isdir(models_folder):
     mkdir(models_folder)
 
@@ -90,7 +90,7 @@ for all_train_idx, all_val_idx in kf.split(all_files):
                     optimizer=SGD(lr=5e-2, decay=1e-6, momentum=0.9, nesterov=True),
                     metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
 
-      model_checkpoint = ModelCheckpoint(path.join(models_folder, '{}_weights_{0}_{1}.h5'.format(model_id, cities[city_id], it)), monitor='val_dice_coef_rounded',
+      model_checkpoint = ModelCheckpoint(path.join(models_folder, '{}_weights_{}_{}.h5'.format(model_id, cities[city_id], it)), monitor='val_dice_coef_rounded',
                                          save_best_only=True, save_weights_only=True, mode='max')
       model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
                             epochs=15, steps_per_epoch=steps_per_epoch, verbose=2,
@@ -118,11 +118,11 @@ for all_train_idx, all_val_idx in kf.split(all_files):
       np.random.seed(it+22)
       random.seed(it+22)
       tf.set_random_seed(it+22)
-      model.load_weights(path.join(models_folder, '{}_weights_{0}_{1}.h5'.format(model_id, cities[city_id], it)))
+      model.load_weights(path.join(models_folder, '{}_weights_{}_{}.h5'.format(model_id, cities[city_id], it)))
       model.compile(loss=dice_logloss,
                     optimizer=Adam(lr=5e-4),
                     metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
-      model_checkpoint2 = ModelCheckpoint(path.join(models_folder, '{}_weights2_{0}_{1}.h5'.format(model_id, cities[city_id], it)), monitor='val_dice_coef_rounded',
+      model_checkpoint2 = ModelCheckpoint(path.join(models_folder, '{}_weights2_{}_{}.h5'.format(model_id, cities[city_id], it)), monitor='val_dice_coef_rounded',
                                          save_best_only=True, save_weights_only=True, mode='max')
       model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
                             epochs=20, steps_per_epoch=steps_per_epoch, verbose=2,
@@ -143,7 +143,7 @@ for all_train_idx, all_val_idx in kf.split(all_files):
       model.compile(loss=dice_logloss2,
                     optimizer=Adam(lr=5e-5),
                     metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
-      model_checkpoint3 = ModelCheckpoint(path.join(models_folder, '{}_weights3_{0}_{1}.h5'.format(model_id, cities[city_id], it)), monitor='val_dice_coef_rounded',
+      model_checkpoint3 = ModelCheckpoint(path.join(models_folder, '{}_weights3_{}_{}.h5'.format(model_id, cities[city_id], it)), monitor='val_dice_coef_rounded',
                                          save_best_only=True, save_weights_only=True, mode='max')
       model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
                             epochs=40, steps_per_epoch=steps_per_epoch, verbose=2,
@@ -154,11 +154,11 @@ for all_train_idx, all_val_idx in kf.split(all_files):
       np.random.seed(it+44)
       random.seed(it+44)
       tf.set_random_seed(it+44)
-      model.load_weights(path.join(models_folder, '{}_weights3_{0}_{1}.h5'.format(model_id, cities[city_id], it)))
+      model.load_weights(path.join(models_folder, '{}_weights3_{}_{}.h5'.format(model_id, cities[city_id], it)))
       model.compile(loss=dice_logloss3,
                     optimizer=Adam(lr=2e-5),
                     metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
-      model_checkpoint4 = ModelCheckpoint(path.join(models_folder, '{}_weights4_{0}_{1}.h5'.format(model_id, cities[city_id], it)), monitor='val_dice_coef_rounded',
+      model_checkpoint4 = ModelCheckpoint(path.join(models_folder, '{}_weights4_{}_{}.h5'.format(model_id, cities[city_id], it)), monitor='val_dice_coef_rounded',
                                          save_best_only=True, save_weights_only=True, mode='max')
       model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
                             epochs=40, steps_per_epoch=steps_per_epoch, verbose=2,
