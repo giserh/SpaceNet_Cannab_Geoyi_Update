@@ -50,8 +50,8 @@ def preprocess_inputs_std(x, city_id):
     zero_msk = (x == 0)
     x = np.asarray(x, dtype='float32')
     for i in range(channel_no):
-        x[..., i] -= means[i]
-        x[..., i] /= stds[i]
+        x[..., i] -= means[city_id][i]
+        x[..., i] /= stds[city_id][i]
     x[zero_msk] = 0
     return x
 

@@ -35,6 +35,9 @@ d = 'AOI_3_Paris_Roads_Train'
 masks_folder = os.path.join(os.getcwd(),'wdata/{}/masks_smallest'.format(d))
 models_folder = os.path.join(os.getcwd(),'wdata/{}/nn_models'.format(d))
 
+means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
+stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
+
 t0 = timeit.default_timer()
 
 model_id = sys.argv[1]
