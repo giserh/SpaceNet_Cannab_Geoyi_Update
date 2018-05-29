@@ -13,8 +13,6 @@ import cv2
 from keras.optimizers import SGD, Adam
 from keras import metrics
 from keras.callbacks import ModelCheckpoint
-from resnet_unet import get_resnet_unet
-from inception_unet import get_inception_resnet_v2_unet
 from loss import dice_coef, dice_logloss2, dice_logloss3, dice_coef_rounded, dice_logloss
 import skimage.io
 import keras.backend as K
@@ -24,7 +22,6 @@ from data_utils import datafiles, means_data, stds_data, preprocess_inputs_std, 
 
 channel_no = 3
 input_shape = (320, 320)
-channel_no = 3
 cities = ['Vegas','Paris']
 city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
                      Paris = 'AOI_3_Paris_Roads_Train')
@@ -40,6 +37,14 @@ models_folder = os.path.join(os.getcwd(),'wdata/{}/nn_models'.format(d))
 
 t0 = timeit.default_timer()
 
+model_id = sys.argv[1]
+if model_id == 'resnet_unet':
+  from resnet_unet import get_resnet_unet
+  model = get_resnet_unet(input_shape)
+else:
+  from inception_unet import get_inception_resnet_v2_unet
+  model = get_inception_resnet_v2_unet(input_shape)
+  
 if not path.isdir(models_folder):
     mkdir(models_folder)
 
@@ -78,17 +83,8 @@ for all_train_idx, all_val_idx in kf.split(all_files):
 
       print('Training model', it, cities[city_id])
 
-      models = dict(resnet_unet = get_resnet_unet(input_shape), inception_unet = get_inception_resnet_v2_unet(input_shape))
-      model_id = sys.argv[1]
-      if model_id == 'resnet_unet':
-          model = get_resnet_unet(input_shape)
-      else:
-          model = get_inception_resnet_v2_unet(input_shape)
-      # model = models[model_id]
-      # if model = sys.argv[1]
-      #     model = get_resnet_unet(input_shape)
-      # else:
-      #     model = get_inception_resnet_v2_unet(input_shape)
+      # models = dict(resnet_unet = get_resnet_unet(input_shape), inception_unet = get_inception_resnet_v2_unet(input_shape))
+
 
       model.compile(loss=dice_logloss3,
                     optimizer=SGD(lr=5e-2, decay=1e-6, momentum=0.9, nesterov=True),
