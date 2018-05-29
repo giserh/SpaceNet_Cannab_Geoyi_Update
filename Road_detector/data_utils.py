@@ -109,10 +109,6 @@ def batch_data_generator(train_idx, batch_size):
         for i in train_idx:
             for j in range(1):
                 img = skimage.io.imread(all_files[i], plugin='tifffile')
-                # pan = skimage.io.imread(all_pan_files[i], plugin='tifffile')
-                # pan = cv2.resize(pan, (325, 325))
-                # pan = pan[..., np.newaxis]
-                # img = np.concatenate([img, pan], axis=2)
                 rgb_index = [i for i in range(channel_no)]
                 img = img[:, :, rgb_index]
                 msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0]
@@ -158,10 +154,6 @@ def val_data_generator(val_idx, batch_size, validation_steps):
         step_id = 0
         for i in val_idx:
             img0 = skimage.io.imread(all_files[i], plugin='tifffile')
-            # pan = skimage.io.imread(all_pan_files[i], plugin='tifffile')
-            # pan = cv2.resize(pan, (325, 325))
-            # pan = pan[..., np.newaxis]
-            # img0 = np.concatenate([img0, pan], axis=2)
             rgb_index = [i for i in range(channel_no)]
             img0 = img0[:, :, rgb_index]
             msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0:1]

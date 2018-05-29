@@ -1,15 +1,7 @@
-# from keras.applications.vgg16 import VGG16
+
 from keras import backend as K
-# from keras.models import Model
-# from keras.layers import Input, BatchNormalization, Conv2D, MaxPooling2D, AveragePooling2D, concatenate, Concatenate, UpSampling2D, Activation, SpatialDropout2D, RepeatVector, Reshape
-# from resnet50_padding_same import ResNet50, identity_block
-# from resnet50_padding_same import conv_block as resnet_conv_block
 from keras.losses import binary_crossentropy
-# from inception_resnet_v2_padding_same import InceptionResNetV2, inception_resnet_block, conv2d_bn
-#from keras.applications.densenet import DenseNet169
-# from inception_v3_padding_same import InceptionV3, inc_conv2d_bn
-# bn_axis = 3
-# channel_axis = bn_axis
+
 
 def dice_coef(y_true, y_pred):
     y_true_f = K.flatten(y_true)

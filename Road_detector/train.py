@@ -86,7 +86,6 @@ for all_train_idx, all_val_idx in kf.split(all_files):
 
       print('Training model', it, cities[city_id])
 
-      # models = dict(resnet_unet = get_resnet_unet(input_shape), inception_unet = get_inception_resnet_v2_unet(input_shape))
 
 
       model.compile(loss=dice_logloss3,
