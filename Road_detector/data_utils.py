@@ -35,13 +35,13 @@ stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
 def means_data(data):
     axis = tuple([i for i in range(data.shape[-1])])
     means = np.mean(data, axis = axis)
-    print(means)
+    # print(means)
     return means
 
 def stds_data(data):
     axis = tuple([i for i in range(data.shape[-1])])
     stds = np.std(data, axis = axis)
-    print(stds)
+    # print(stds)
     return stds
 
 def preprocess_inputs_std(x, city_id):
