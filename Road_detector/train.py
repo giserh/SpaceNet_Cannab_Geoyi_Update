@@ -80,7 +80,11 @@ for all_train_idx, all_val_idx in kf.split(all_files):
 
       models = dict(resnet_unet = get_resnet_unet(input_shape), inception_unet = get_inception_resnet_v2_unet(input_shape))
       model_id = sys.argv[1]
-      model = models[model_id]
+      if model_id == 'resnet_unet':
+          model = get_resnet_unet(input_shape)
+      else:
+          model = get_inception_resnet_v2_unet(input_shape)
+      # model = models[model_id]
       # if model = sys.argv[1]
       #     model = get_resnet_unet(input_shape)
       # else:
