@@ -1,13 +1,13 @@
-from keras.applications.vgg16 import VGG16
+# from keras.applications.vgg16 import VGG16
 from keras import backend as K
 from keras.models import Model
 from keras.layers import Input, BatchNormalization, Conv2D, MaxPooling2D, AveragePooling2D, concatenate, Concatenate, UpSampling2D, Activation, SpatialDropout2D, RepeatVector, Reshape
 from resnet50_padding_same import ResNet50, identity_block
 from resnet50_padding_same import conv_block as resnet_conv_block
 from keras.losses import binary_crossentropy
-from inception_resnet_v2_padding_same import InceptionResNetV2, inception_resnet_block, conv2d_bn
+# from inception_resnet_v2_padding_same import InceptionResNetV2, inception_resnet_block, conv2d_bn
 #from keras.applications.densenet import DenseNet169
-from inception_v3_padding_same import InceptionV3, inc_conv2d_bn
+# from inception_v3_padding_same import InceptionV3, inc_conv2d_bn
 from loss import dice_coef, dice_coef_rounded, dice_coef_loss, dice_logloss, dice_logloss2, dice_logloss3, weighted_bce_loss, weighted_bce_dice_loss
 bn_axis = 3
 channel_axis = bn_axis
