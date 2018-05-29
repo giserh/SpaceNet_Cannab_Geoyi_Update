@@ -33,13 +33,13 @@ city_id = -1
 
 ## define means and stds from reading data with npz format
 def means_data(data):
-    axis = tuple([i for i in data.shape[-1]])
+    axis = tuple([i for i in range(data.shape[-1])])
     means = np.mean(data, axis = axis)
     print(means)
     return means
 
 def stds_data(data):
-    axis = tuple([i for i in data.shape[-1]])
+    axis = tuple([i for i in range(data.shape[-1])])
     stds = np.std(data, axis = axis)
     print(stds)
     return stds
@@ -50,8 +50,8 @@ def preprocess_inputs_std(x, city_id):
     zero_msk = (x == 0)
     x = np.asarray(x, dtype='float32')
     for i in range(channel_no):
-        x[..., i] -= means[city_id][i]
-        x[..., i] /= stds[city_id][i]
+        x[..., i] -= means[i]
+        x[..., i] /= stds[i]
     x[zero_msk] = 0
     return x
 
@@ -83,7 +83,7 @@ def datafiles(cities, city_datasets):
                 cinp[cid] = 1.0
                 all_city_inp.append(cinp)
                 all_masks.append(path.join(masks_folder, '{0}{1}'.format(img_id, '.png')))
-    print(all_files[:2], all_pan_files[:2], all_city_inp[:2], all_masks[:2])
+    # print(all_files[:2], all_pan_files[:2], all_city_inp[:2], all_masks[:2])
     all_files = np.asarray(all_files)
     all_pan_files = np.asarray(all_pan_files)
     all_city_inp = np.asarray(all_city_inp)
