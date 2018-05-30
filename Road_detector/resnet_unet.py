@@ -22,8 +22,8 @@ def conv_block(prev, num_filters, kernel=(3, 3), strides=(1, 1), act='relu', pre
     conv = Activation(act, name=name)(conv)
     return conv
 
-def get_resnet_unet(input_shape, weights='imagenet'):
-    inp = Input(input_shape + (3,))
+def get_resnet_unet(input_shape,channel_no, weights='imagenet'):
+    inp = Input(input_shape + (channel_no,))
 
     x = Conv2D(
         64, (7, 7), strides=(2, 2), padding='same', name='conv1')(inp)
@@ -80,7 +80,7 @@ def get_resnet_unet(input_shape, weights='imagenet'):
     model = Model(inp, res)
 
     if weights == 'imagenet':
-        resnet = ResNet50(input_shape=input_shape + (3,), include_top=False, weights=weights)
+        resnet = ResNet50(input_shape=input_shape + (channel_no,), include_top=False, weights=weights)
         for i in range(2, len(resnet.layers)-1):
             model.layers[i].set_weights(resnet.layers[i].get_weights())
             model.layers[i].trainable = False

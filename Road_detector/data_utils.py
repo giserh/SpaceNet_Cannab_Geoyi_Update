@@ -39,7 +39,7 @@ rgb_index = [5, 4, 3]
 def means_data(data):
     axis = tuple([i for i in range(data.shape[-1])])
     means = np.mean(data, axis = axis)
-    # print(means)
+    print(means)
     return means
 
 def stds_data(data):
@@ -125,10 +125,11 @@ def batch_data_generator(train_idx, batch_size):
                 else:
                     img = img
                 # rgb_index = [i for i in range(channel_no)]
-                if channel_no < 8:
+                if channel_no == 8:
+                    img = img
+                else:
                     band_index = rgb_index
                     img = img[:, :, band_index]
-                else: img = img
                 msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0]
 
                 if random.random() > 0.5:
@@ -177,11 +178,10 @@ def val_data_generator(val_idx, batch_size, validation_steps):
             else:
                 img0 = img0
             # rgb_index = [i for i in range(channel_no)]
-            if channel_no < 8:
+            if channel_no == 8:img0 = img0
+            else:
                 band_index = rgb_index
                 img0 = img0[:, :, band_index]
-            else:
-                img0 = img0
             msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0:1]
             msk = (msk > 127) * 1
             for x0, y0 in [(0, 0)]:

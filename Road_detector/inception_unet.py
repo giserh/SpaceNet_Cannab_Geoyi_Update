@@ -21,8 +21,8 @@ def conv_block(prev, num_filters, kernel=(3, 3), strides=(1, 1), act='relu', pre
     conv = Activation(act, name=name)(conv)
     return conv
 
-def get_inception_resnet_v2_unet(input_shape, weights='imagenet'):
-    inp = Input(input_shape + (3,))
+def get_inception_resnet_v2_unet(input_shape,channel_no, weights='imagenet'):
+    inp = Input(input_shape + (channel_no,))
 
     # Stem block: 35 x 35 x 192
     x = conv2d_bn(inp, 32, 3, strides=2, padding='same')
@@ -123,7 +123,7 @@ def get_inception_resnet_v2_unet(input_shape, weights='imagenet'):
     model = Model(inp, res)
 
     if weights == 'imagenet':
-        inception_resnet_v2 = InceptionResNetV2(weights=weights, include_top=False, input_shape=input_shape + (3,))
+        inception_resnet_v2 = InceptionResNetV2(weights=weights, include_top=False, input_shape=input_shape + (channel_no,))
         for i in range(2, len(inception_resnet_v2.layers)-1):
             model.layers[i].set_weights(inception_resnet_v2.layers[i].get_weights())
             model.layers[i].trainable = False
