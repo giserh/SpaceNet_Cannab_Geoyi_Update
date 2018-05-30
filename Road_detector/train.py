@@ -141,7 +141,7 @@ for all_train_idx, all_val_idx in kf.split(all_files):
       np.random.seed(it+33)
       random.seed(it+33)
       tf.set_random_seed(it+33)
-      model.load_weights(path.join(models_folder, '{}_weights2_{0}_{1}.h5'.format(model_id, cities[city_id], it)))
+      model.load_weights(path.join(models_folder, '{}_weights2_{}_{}.h5'.format(model_id, cities[city_id], it)))
       model.compile(loss=dice_logloss2,
                     optimizer=Adam(lr=5e-5),
                     metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
