@@ -26,7 +26,7 @@ input_shape = (320, 320)
 # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
 #                      Paris = 'AOI_3_Paris_Roads_Train')
 # city_id = -1
-batch_size = 16
+batch_size = 64
 # it = -1
 all_files, all_masks = datafiles()
 # fold_nums = [0, 1]
@@ -95,7 +95,7 @@ for all_train_idx, all_val_idx in kf.split(all_files):
     model_checkpoint = ModelCheckpoint(path.join(models_folder, '{}_weights.h5'.format(model_id)), monitor='val_dice_coef_rounded',
                                      save_best_only=True, save_weights_only=True, mode='max')
     model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
-                        epochs=15, steps_per_epoch=steps_per_epoch, verbose=2,
+                        epochs=25, steps_per_epoch=steps_per_epoch, verbose=2,
                         validation_data=val_data_generator(val_idx, batch_size, validation_steps),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint])
@@ -106,13 +106,13 @@ for all_train_idx, all_val_idx in kf.split(all_files):
                 metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
 
     model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
-                        epochs=30, steps_per_epoch=steps_per_epoch, verbose=2,
+                        epochs=40, steps_per_epoch=steps_per_epoch, verbose=2,
                         validation_data=val_data_generator(val_idx, batch_size, validation_steps),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint])
     model.optimizer = Adam(lr=2e-4)
     model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
-                        epochs=15, steps_per_epoch=steps_per_epoch, verbose=2,
+                        epochs=25, steps_per_epoch=steps_per_epoch, verbose=2,
                         validation_data=val_data_generator(val_idx, batch_size, validation_steps),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint])
@@ -121,19 +121,19 @@ for all_train_idx, all_val_idx in kf.split(all_files):
     random.seed(22)
     tf.set_random_seed(22)
     model.load_weights(path.join(models_folder, '{}_weights.h5'.format(model_id)))
-    model.compile(loss=dice_logloss3,
+    model.compile(loss=dice_logloss,
                 optimizer=Adam(lr=5e-4),
                 metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
     model_checkpoint2 = ModelCheckpoint(path.join(models_folder, '{}_weights2.h5'.format(model_id)), monitor='val_dice_coef_rounded',
                                      save_best_only=True, save_weights_only=True, mode='max')
     model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
-                        epochs=20, steps_per_epoch=steps_per_epoch, verbose=2,
+                        epochs=30, steps_per_epoch=steps_per_epoch, verbose=2,
                         validation_data=val_data_generator(val_idx, batch_size, validation_steps),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint2])
     optimizer=Adam(lr=1e-5)
     model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
-                        epochs=10, steps_per_epoch=steps_per_epoch, verbose=2,
+                        epochs=20, steps_per_epoch=steps_per_epoch, verbose=2,
                         validation_data=val_data_generator(val_idx, batch_size, validation_steps),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint2])
@@ -142,13 +142,13 @@ for all_train_idx, all_val_idx in kf.split(all_files):
     random.seed(33)
     tf.set_random_seed(33)
     model.load_weights(path.join(models_folder, '{}_weights2.h5'.format(model_id)))
-    model.compile(loss=dice_logloss3,
+    model.compile(loss=dice_logloss2,
                 optimizer=Adam(lr=5e-5),
                 metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
     model_checkpoint3 = ModelCheckpoint(path.join(models_folder, '{}_weights3.h5'.format(model_id)), monitor='val_dice_coef_rounded',
                                      save_best_only=True, save_weights_only=True, mode='max')
     model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
-                        epochs=40, steps_per_epoch=steps_per_epoch, verbose=2,
+                        epochs=50, steps_per_epoch=steps_per_epoch, verbose=2,
                         validation_data=val_data_generator(val_idx, batch_size, validation_steps),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint3])
@@ -163,7 +163,7 @@ for all_train_idx, all_val_idx in kf.split(all_files):
     model_checkpoint4 = ModelCheckpoint(path.join(models_folder, '{}_weights4.h5'.format(model_id)), monitor='val_dice_coef_rounded',
                                      save_best_only=True, save_weights_only=True, mode='max')
     model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
-                        epochs=40, steps_per_epoch=steps_per_epoch, verbose=2,
+                        epochs=50, steps_per_epoch=steps_per_epoch, verbose=2,
                         validation_data=val_data_generator(val_idx, batch_size, validation_steps),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint4])

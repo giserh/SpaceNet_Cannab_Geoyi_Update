@@ -37,6 +37,7 @@ if __name__ == '__main__':
 
     model_name = 'resnet_NEW_TRAIN'
     imgs_folder = sys.argv[2]
+    rgb_index = [5, 4, 3]
 
     # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Test_Public',
     #                      Paris = 'AOI_3_Paris_Roads_Test_Public')
@@ -108,7 +109,6 @@ if __name__ == '__main__':
             # pan = pan[..., np.newaxis]
             # img = np.concatenate([img, pan], axis=2)
             if img.shape[-1] > 3:
-                rgb_index = [5, 4, 3]
                 img = img[:, :, rgb_index]
             else: img = img
             img = cv2.copyMakeBorder(img, 13, 14, 13, 14, cv2.BORDER_REFLECT_101)

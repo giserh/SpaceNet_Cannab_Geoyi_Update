@@ -24,6 +24,8 @@ channel_no = 3
 input_shape = (320, 320)
 origin_shape = (325, 325)
 img_head = 'RGB-PanSharpen_'
+rgb_index = [5, 4, 3]
+
 
 # cities = ['Vegas','Paris']
 # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
@@ -124,7 +126,7 @@ def batch_data_generator(train_idx, batch_size):
                     img = img
                 # rgb_index = [i for i in range(channel_no)]
                 if img.shape[-1] > 3:
-                    rgb_index = [5, 4, 3]
+                    rgb_index = rgb_index
                     img = img[:, :, rgb_index]
                 else: img = img
                 msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0]
@@ -176,7 +178,7 @@ def val_data_generator(val_idx, batch_size, validation_steps):
                 img0 = img0
             # rgb_index = [i for i in range(channel_no)]
             if img0.shape[-1] > 3:
-                rgb_index = [5, 4, 3]
+                rgb_index = rgb_index
                 img0 = img0[:, :, rgb_index]
             else:
                 img0 = img0
