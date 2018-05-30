@@ -44,10 +44,10 @@ t0 = timeit.default_timer()
 model_id = sys.argv[1]
 if model_id == 'resnet_unet':
     from resnet_unet import get_resnet_unet
-    model = get_resnet_unet(input_shape)
+    model = get_resnet_unet(input_shape, channel_no)
 else:
     from inception_unet import get_inception_resnet_v2_unet
-    model = get_inception_resnet_v2_unet(input_shape)
+    model = get_inception_resnet_v2_unet(input_shape, channel_no)
 
 if not path.isdir(models_folder):
     mkdir(models_folder)

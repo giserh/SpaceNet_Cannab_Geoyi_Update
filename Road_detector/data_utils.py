@@ -23,7 +23,7 @@ import keras.backend as K
 channel_no = 8
 input_shape = (320, 320)
 origin_shape = (325, 325)
-img_head = 'RGB-PanSharpen_'
+img_head = 'MUL-PanSharpen_'
 rgb_index = [5, 4, 3]
 
 
