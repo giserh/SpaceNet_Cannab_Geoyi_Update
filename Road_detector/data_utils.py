@@ -23,9 +23,9 @@ import keras.backend as K
 channel_no = 3
 input_shape = (320, 320)
 channel_no = 3
-cities = ['Vegas','Paris']
-city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
-                     Paris = 'AOI_3_Paris_Roads_Train')
+# cities = ['Vegas','Paris']
+# city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
+#                      Paris = 'AOI_3_Paris_Roads_Train')
 city_id = -1
 
 means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
@@ -44,56 +44,60 @@ def stds_data(data):
     # print(stds)
     return stds
 
-def preprocess_inputs_std(x, city_id):
+def preprocess_inputs_std(x):
+    """The means and stds are train and validation base.
+    It need to be train's stds and means. It might be ok since we are doing KFold split here"""
     # means = means_data(x)
     # stds = stds_data(x)
     zero_msk = (x == 0)
     x = np.asarray(x, dtype='float32')
-    for i in range(channel_no):
-        x[..., i] -= means[city_id][i]
-        x[..., i] /= stds[city_id][i]
+    x -= means_data(x)
+    x /= stds_data(x)
+    # for i in range(channel_no):
+    #     x[..., i] -= means[city_id][i]
+    #     x[..., i] /= stds[city_id][i]
     x[zero_msk] = 0
     return x
 
-def datafiles(cities, city_datasets):
+def datafiles():
     all_files = []
-    all_pan_files = []
-    all_city_inp = []
+    # all_pan_files = []
+    # all_city_inp = []
     all_masks = []
 
     t0 = timeit.default_timer()
 
-    fold_nums = [0, 1]
+    # fold_nums = [0, 1]
 
     # train_folders = []
     # for i in range(1, len(sys.argv)):
     #     train_folders.append(sys.argv[i])
-    for city,d in city_datasets.items():
-        masks_folder = os.path.join(os.getcwd(),'wdata/{}/masks_smallest'.format(d))
-        models_folder = os.path.join(os.getcwd(),'wdata/{}/nn_models'.format(d))
-        if not path.isdir(models_folder):
-            mkdir(models_folder)
-        for f in sorted(listdir(path.join(os.getcwd(), 'wdata', d, 'MUL'))):
-            if path.isfile(path.join(os.getcwd(), 'wdata', d, 'MUL', f)) and '.tif' in f:
-                img_id = f.split('MUL_')[1].split('.')[0]
-                all_files.append(path.join(os.getcwd(), 'wdata', d, 'MUL', f))
-                all_pan_files.append(path.join(os.getcwd(), 'wdata', d, 'PAN', 'PAN_{0}.tif'.format(img_id)))
-                cinp = np.zeros((4,))
-                cid = cities.index(img_id.split('_')[2])
-                cinp[cid] = 1.0
-                all_city_inp.append(cinp)
-                all_masks.append(path.join(masks_folder, '{0}{1}'.format(img_id, '.png')))
+    # for city,d in city_datasets.items():
+    masks_folder = os.path.join(os.getcwd(),'wdata/AOI_3_Paris_Roads_Train/masks_smallest')
+    models_folder = os.path.join(os.getcwd(),'wdata/AOI_3_Paris_Roads_Train/nn_models')
+    if not path.isdir(models_folder):
+        mkdir(models_folder)
+    for f in sorted(listdir(path.join(os.getcwd(), 'wdata', 'AOI_3_Paris_Roads_Train', 'MUL'))):
+        if path.isfile(path.join(os.getcwd(), 'wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f)) and '.tif' in f:
+            img_id = f.split('MUL_')[1].split('.')[0]
+            all_files.append(path.join(os.getcwd(), 'wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f))
+                # all_pan_files.append(path.join(os.getcwd(), 'wdata', d, 'PAN', 'PAN_{0}.tif'.format(img_id)))
+                # cinp = np.zeros((4,))
+                # cid = cities.index(img_id.split('_')[2])
+                # cinp[cid] = 1.0
+                # all_city_inp.append(cinp)
+            all_masks.append(path.join(masks_folder, '{0}{1}'.format(img_id, '.png')))
     # print(all_files[:2], all_pan_files[:2], all_city_inp[:2], all_masks[:2])
     all_files = np.asarray(all_files)
-    all_pan_files = np.asarray(all_pan_files)
-    all_city_inp = np.asarray(all_city_inp)
+    # all_pan_files = np.asarray(all_pan_files)
+    # all_city_inp = np.asarray(all_city_inp)
     all_masks = np.asarray(all_masks)
-    return all_files, all_pan_files, all_city_inp, all_masks
+    return all_files, all_masks
 
 # cities = ['Vegas', 'Paris', 'Shanghai', 'Khartoum']
 
 def rotate_image(image, angle, scale):
-    all_files, all_pan_files, all_city_inp, all_masks = datafiles(cities, city_datasets)
+    all_files,all_masks = datafiles()
     image_center = tuple(np.array(image.shape[:2])/2)
     rot_mat = cv2.getRotationMatrix2D(image_center, angle, scale)
     result = cv2.warpAffine(image, rot_mat, image.shape[:2],flags=cv2.INTER_LINEAR)
@@ -101,7 +105,7 @@ def rotate_image(image, angle, scale):
 
 
 def batch_data_generator(train_idx, batch_size):
-    all_files, all_pan_files, all_city_inp, all_masks = datafiles(cities, city_datasets)
+    all_files, all_masks = datafiles()
     inputs = []
     outputs = []
     while True:
@@ -141,13 +145,13 @@ def batch_data_generator(train_idx, batch_size):
                 if len(inputs) == batch_size:
                     inputs = np.asarray(inputs)
                     outputs = np.asarray(outputs, dtype='float')
-                    inputs = preprocess_inputs_std(inputs, city_id)
+                    inputs = preprocess_inputs_std(inputs)
                     yield inputs, outputs
                     inputs = []
                     outputs = []
 
 def val_data_generator(val_idx, batch_size, validation_steps):
-    all_files, all_pan_files, all_city_inp, all_masks = datafiles(cities, city_datasets)
+    all_files,all_masks = datafiles()
     while True:
         inputs = []
         outputs = []
@@ -167,7 +171,7 @@ def val_data_generator(val_idx, batch_size, validation_steps):
                     step_id += 1
                     inputs = np.asarray(inputs)
                     outputs = np.asarray(outputs, dtype='float')
-                    inputs = preprocess_inputs_std(inputs, city_id)
+                    inputs = preprocess_inputs_std(inputs)
                     yield inputs, outputs
                     inputs = []
                     outputs = []
