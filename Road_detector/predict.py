@@ -98,6 +98,11 @@ if __name__ == '__main__':
 
             fpath = path.join(imgs_folder, f)
             img = skimage.io.imread(fpath, plugin='tifffile')
+            if img.shape[0] != origin_shape[0]:
+                img= cv2.resize(img, origin_shape)
+            else:
+                img = img
+
             # pan = skimage.io.imread(path.join('wdata', 'AOI_3_Paris_Roads_Test_Public', 'PAN', 'PAN_{0}.tif'.format(img_id)), plugin='tifffile')
             # pan = cv2.resize(pan, (325, 325))
             # pan = pan[..., np.newaxis]
