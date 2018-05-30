@@ -108,7 +108,7 @@ if __name__ == '__main__':
             # pan = cv2.resize(pan, (325, 325))
             # pan = pan[..., np.newaxis]
             # img = np.concatenate([img, pan], axis=2)
-            if channel_no > 8:
+            if channel_no < 8:
                 band_index = rgb_index
                 img = img[:, :, band_index]
             else: img = img
