@@ -16,6 +16,10 @@ from tqdm import tqdm
 from data_utils import means_data, stds_data, preprocess_inputs_std
 
 input_shape = (352, 352)
+# input_shape for the prediction is inputshape[0] + 14 + 13
+origin_shape = (325, 325)
+border = (13, 14)
+
 channel_no = 3
 img_head = 'RGB-PanSharpen_'
 

@@ -22,6 +22,7 @@ import keras.backend as K
 
 channel_no = 3
 input_shape = (320, 320)
+origin_shape = (325, 325)
 img_head = 'RGB-PanSharpen_'
 
 # cities = ['Vegas','Paris']
@@ -117,8 +118,8 @@ def batch_data_generator(train_idx, batch_size):
         for i in train_idx:
             for j in range(1):
                 img = skimage.io.imread(all_files[i], plugin='tifffile')
-                if img.shape[0] =! input_shape[0]:
-                    img= cv2.resize(img, input_shape)
+                if img.shape[0] != origin_shape[0]:
+                    img= cv2.resize(img, origin_shape)
                 else:
                     img = img
                 # rgb_index = [i for i in range(channel_no)]
@@ -169,8 +170,8 @@ def val_data_generator(val_idx, batch_size, validation_steps):
         step_id = 0
         for i in val_idx:
             img0 = skimage.io.imread(all_files[i], plugin='tifffile')
-            if img0.shape[0] =! input_shape[0]:
-                img0= cv2.resize(img0, input_shape)
+            if img0.shape[0] != origin_shape[0]:
+                img0= cv2.resize(img0, origin_shape)
             else:
                 img0 = img0
             # rgb_index = [i for i in range(channel_no)]
