@@ -48,7 +48,7 @@ if __name__ == '__main__':
     #
     # cities = ['Vegas', 'Paris']
     # cities = city_datasets.values()
-    models = dict(resnet_unet = get_resnet_unet(input_shape, weights=None), inception_unet = get_inception_resnet_v2_unet(input_shape, weights=None))
+    # models = dict(resnet_unet = get_resnet_unet(input_shape, weights=None), inception_unet = get_inception_resnet_v2_unet(input_shape, weights=None))
     model_id = sys.argv[1]
 
     t0 = timeit.default_timer()
