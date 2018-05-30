@@ -10,7 +10,7 @@ import tensorflow as tf
 tf.set_random_seed(1)
 import timeit
 import cv2
-from models import get_resnet_unet
+# from models import get_resnet_unet
 import skimage.io
 from tqdm import tqdm
 from data_utils import means_data, stds_data, preprocess_inputs_std
@@ -94,19 +94,21 @@ if __name__ == '__main__':
 
         print('Predictiong fold', it)
         # for city, d in city_datasets.items():
-        for f in tqdm(sorted(listdir(path.join('wdata', 'AOI_3_Paris_Roads_Test_Public', 'MUL')))):
-            if path.isfile(path.join('wdata', 'AOI_3_Paris_Roads_Test_Public', 'MUL', f)) and '.tif' in f:
+        for f in tqdm(sorted(listdir(path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL')))):
+            if path.isfile(path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f)) and '.tif' in f:
                 img_id = f.split('MUL_')[1].split('.')[0]
                 # cinp = np.zeros((4,))
                 # cinp[cities.index(img_id.split('_')[2])] = 1.0
                 # cid = cinp.argmax()
 
-                fpath = path.join('wdata', 'AOI_3_Paris_Roads_Test_Public', 'MUL', f)
+                fpath = path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f)
                 img = skimage.io.imread(fpath, plugin='tifffile')
                 # pan = skimage.io.imread(path.join('wdata', 'AOI_3_Paris_Roads_Test_Public', 'PAN', 'PAN_{0}.tif'.format(img_id)), plugin='tifffile')
                 # pan = cv2.resize(pan, (325, 325))
                 # pan = pan[..., np.newaxis]
-                img = np.concatenate([img, pan], axis=2)
+                # img = np.concatenate([img, pan], axis=2)
+                rgb_index = [5, 4, 3]
+                img = img[:, :, rgb_index]
                 img = cv2.copyMakeBorder(img, 13, 14, 13, 14, cv2.BORDER_REFLECT_101)
                 inp = []
                 inp.append(img)
@@ -119,7 +121,7 @@ if __name__ == '__main__':
                 mask = mask[13:338, 13:338, ...]
                 mask = mask * 255
                 mask = mask.astype('uint8')
-                cv2.imwrite(path.join(pred_folder, model_name, str(it), city, '{0}.png'.format(img_id)), mask, [cv2.IMWRITE_PNG_COMPRESSION, 9])
+                cv2.imwrite(path.join(pred_folder, model_name, str(it), '{0}.png'.format(img_id)), mask, [cv2.IMWRITE_PNG_COMPRESSION, 9])
 
     elapsed = timeit.default_timer() - t0
     print('Time: {:.3f} min'.format(elapsed / 60))

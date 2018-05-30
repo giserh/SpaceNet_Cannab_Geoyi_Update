@@ -27,7 +27,7 @@ channel_no = 3
 # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
 #                      Paris = 'AOI_3_Paris_Roads_Train')
 # city_id = -1
-# 
+#
 # means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
 # stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
 
@@ -113,7 +113,8 @@ def batch_data_generator(train_idx, batch_size):
         for i in train_idx:
             for j in range(1):
                 img = skimage.io.imread(all_files[i], plugin='tifffile')
-                rgb_index = [i for i in range(channel_no)]
+                # rgb_index = [i for i in range(channel_no)]
+                rgb_index = [5, 4, 3]
                 img = img[:, :, rgb_index]
                 msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0]
 
@@ -158,7 +159,8 @@ def val_data_generator(val_idx, batch_size, validation_steps):
         step_id = 0
         for i in val_idx:
             img0 = skimage.io.imread(all_files[i], plugin='tifffile')
-            rgb_index = [i for i in range(channel_no)]
+            # rgb_index = [i for i in range(channel_no)]
+            rgb_index = [5, 4, 3]
             img0 = img0[:, :, rgb_index]
             msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0:1]
             msk = (msk > 127) * 1
