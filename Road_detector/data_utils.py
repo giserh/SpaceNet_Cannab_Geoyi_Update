@@ -22,7 +22,7 @@ import keras.backend as K
 
 channel_no = 3
 input_shape = (320, 320)
-channel_no = 3
+
 # cities = ['Vegas','Paris']
 # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
 #                      Paris = 'AOI_3_Paris_Roads_Train')
@@ -114,8 +114,10 @@ def batch_data_generator(train_idx, batch_size):
             for j in range(1):
                 img = skimage.io.imread(all_files[i], plugin='tifffile')
                 # rgb_index = [i for i in range(channel_no)]
-                rgb_index = [5, 4, 3]
-                img = img[:, :, rgb_index]
+                if img.shape[-1] > 3:
+                    rgb_index = [5, 4, 3]
+                    img = img[:, :, rgb_index]
+                else: img = img
                 msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0]
 
                 if random.random() > 0.5:
@@ -160,8 +162,11 @@ def val_data_generator(val_idx, batch_size, validation_steps):
         for i in val_idx:
             img0 = skimage.io.imread(all_files[i], plugin='tifffile')
             # rgb_index = [i for i in range(channel_no)]
-            rgb_index = [5, 4, 3]
-            img0 = img0[:, :, rgb_index]
+            if img0.shape[-1] > 3:
+                rgb_index = [5, 4, 3]
+                img0 = img0[:, :, rgb_index]
+            else:
+                img0 = img0
             msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0:1]
             msk = (msk > 127) * 1
             for x0, y0 in [(0, 0)]:

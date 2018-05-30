@@ -64,64 +64,66 @@ if __name__ == '__main__':
     if not path.isdir(path.join(pred_folder, model_name)):
         mkdir(path.join(pred_folder, model_name))
 
-    for it in [0, 1]:
-        models = []
+    # for it in [0, 1]:
+    models = []
 
-        if not path.isdir(path.join(pred_folder, model_name, str(it))):
-            mkdir(path.join(pred_folder, model_name, str(it)))
+    if not path.isdir(path.join(pred_folder, model_name)):
+        mkdir(path.join(pred_folder, model_name))
 
-        # for i, city in enumerate(city_datasets):
-            # if i in ignored_cities or not path.isfile(path.join(models_folder, 'resnet_smallest_model_weights4_{0}_{1}.h5'.format(cities[i], it))):
-            #     models.append(None)
-            #     continue
-        if not path.isdir(path.join(path.join(pred_folder, model_name, str(it)))):
-            mkdir(path.join(path.join(pred_folder, model_name, str(it))))
-        if model_id == 'resnet_unet':
-            from resnet_unet import get_resnet_unet
-            model = get_resnet_unet(input_shape)
-            # model.load_weights(path.join(models_folder, '{}_weights4_{0}.h5'.format(model_id, it)))
-            # models.append(model)
-        else:
-            from inception_unet import get_inception_resnet_v2_unet
-            model = get_inception_resnet_v2_unet(input_shape)
-        model.load_weights(path.join(models_folder, '{}_weights4_{}.h5'.format(model_id, it)))
+    # for i, city in enumerate(city_datasets):
+        # if i in ignored_cities or not path.isfile(path.join(models_folder, 'resnet_smallest_model_weights4_{0}_{1}.h5'.format(cities[i], it))):
+        #     models.append(None)
+        #     continue
+    if not path.isdir(path.join(path.join(pred_folder, model_name))):
+        mkdir(path.join(path.join(pred_folder, model_name)))
+    if model_id == 'resnet_unet':
+        from resnet_unet import get_resnet_unet
+        model = get_resnet_unet(input_shape)
+        # model.load_weights(path.join(models_folder, '{}_weights4_{0}.h5'.format(model_id, it)))
+        # models.append(model)
+    else:
+        from inception_unet import get_inception_resnet_v2_unet
+        model = get_inception_resnet_v2_unet(input_shape)
+    model.load_weights(path.join(models_folder, '{}_weights4.h5'.format(model_id)))
 
-        if not path.isdir(models_folder):
-            mkdir(models_folder)
-        # model = get_resnet_unet(input_shape, weights=None)
-        # model = models[model_id]
+    if not path.isdir(models_folder):
+        mkdir(models_folder)
+    # model = get_resnet_unet(input_shape, weights=None)
+    # model = models[model_id]
 
 
-        print('Predictiong fold', it)
-        # for city, d in city_datasets.items():
-        for f in tqdm(sorted(listdir(path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL')))):
-            if path.isfile(path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f)) and '.tif' in f:
-                img_id = f.split('MUL_')[1].split('.')[0]
-                # cinp = np.zeros((4,))
-                # cinp[cities.index(img_id.split('_')[2])] = 1.0
-                # cid = cinp.argmax()
+    # print('Predictiong fold', it)
+    # for city, d in city_datasets.items():
+    for f in tqdm(sorted(listdir(path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL')))):
+        if path.isfile(path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f)) and '.tif' in f:
+            img_id = f.split('MUL_')[1].split('.')[0]
+            # cinp = np.zeros((4,))
+            # cinp[cities.index(img_id.split('_')[2])] = 1.0
+            # cid = cinp.argmax()
 
-                fpath = path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f)
-                img = skimage.io.imread(fpath, plugin='tifffile')
-                # pan = skimage.io.imread(path.join('wdata', 'AOI_3_Paris_Roads_Test_Public', 'PAN', 'PAN_{0}.tif'.format(img_id)), plugin='tifffile')
-                # pan = cv2.resize(pan, (325, 325))
-                # pan = pan[..., np.newaxis]
-                # img = np.concatenate([img, pan], axis=2)
+            fpath = path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f)
+            img = skimage.io.imread(fpath, plugin='tifffile')
+            # pan = skimage.io.imread(path.join('wdata', 'AOI_3_Paris_Roads_Test_Public', 'PAN', 'PAN_{0}.tif'.format(img_id)), plugin='tifffile')
+            # pan = cv2.resize(pan, (325, 325))
+            # pan = pan[..., np.newaxis]
+            # img = np.concatenate([img, pan], axis=2)
+            if img.shape[-1] > 3:
                 rgb_index = [5, 4, 3]
                 img = img[:, :, rgb_index]
-                img = cv2.copyMakeBorder(img, 13, 14, 13, 14, cv2.BORDER_REFLECT_101)
-                inp = []
-                inp.append(img)
-                inp.append(np.rot90(img, k=1))
-                inp = np.asarray(inp)
-                inp = preprocess_inputs_std(inp)
-                pred = model.predict(inp)
-                mask = pred[0] + np.rot90(pred[1], k=3)
-                mask /= 2
-                mask = mask[13:338, 13:338, ...]
-                mask = mask * 255
-                mask = mask.astype('uint8')
-                cv2.imwrite(path.join(pred_folder, model_name, str(it), '{0}.png'.format(img_id)), mask, [cv2.IMWRITE_PNG_COMPRESSION, 9])
+            else: img = img
+            img = cv2.copyMakeBorder(img, 13, 14, 13, 14, cv2.BORDER_REFLECT_101)
+            inp = []
+            inp.append(img)
+            inp.append(np.rot90(img, k=1))
+            inp = np.asarray(inp)
+            inp = preprocess_inputs_std(inp)
+            pred = model.predict(inp)
+            mask = pred[0] + np.rot90(pred[1], k=3)
+            mask /= 2
+            mask = mask[13:338, 13:338, ...]
+            mask = mask * 255
+            mask = mask.astype('uint8')
+            cv2.imwrite(path.join(pred_folder, model_name,'{}.png'.format(img_id)), mask, [cv2.IMWRITE_PNG_COMPRESSION, 9])
 
-    elapsed = timeit.default_timer() - t0
-    print('Time: {:.3f} min'.format(elapsed / 60))
+elapsed = timeit.default_timer() - t0
+print('Time: {:.3f} min'.format(elapsed / 60))
