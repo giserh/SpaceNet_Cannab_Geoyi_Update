@@ -85,7 +85,7 @@ for all_train_idx, all_val_idx in kf.split(all_files):
 
     # print('Training model', it, cities[city_id])
 
-
+    ## change loss functions - 2018-05-30 12:14
 
     model.compile(loss=dice_logloss3,
                 optimizer=SGD(lr=5e-2, decay=1e-6, momentum=0.9, nesterov=True),
@@ -120,7 +120,7 @@ for all_train_idx, all_val_idx in kf.split(all_files):
     random.seed(it+22)
     tf.set_random_seed(it+22)
     model.load_weights(path.join(models_folder, '{}_weights_{}.h5'.format(model_id, it)))
-    model.compile(loss=dice_logloss,
+    model.compile(loss=dice_logloss3,
                 optimizer=Adam(lr=5e-4),
                 metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
     model_checkpoint2 = ModelCheckpoint(path.join(models_folder, '{}_weights2_{}.h5'.format(model_id, it)), monitor='val_dice_coef_rounded',
@@ -141,7 +141,7 @@ for all_train_idx, all_val_idx in kf.split(all_files):
     random.seed(it+33)
     tf.set_random_seed(it+33)
     model.load_weights(path.join(models_folder, '{}_weights2_{}.h5'.format(model_id, it)))
-    model.compile(loss=dice_logloss2,
+    model.compile(loss=dice_logloss3,
                 optimizer=Adam(lr=5e-5),
                 metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
     model_checkpoint3 = ModelCheckpoint(path.join(models_folder, '{}_weights3_{}.h5'.format(model_id, it)), monitor='val_dice_coef_rounded',
