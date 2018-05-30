@@ -20,7 +20,7 @@ input_shape = (352, 352)
 origin_shape = (325, 325)
 border = (13, 14)
 
-channel_no = 3
+channel_no = 8
 img_head = 'RGB-PanSharpen_'
 
 # means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
@@ -108,8 +108,9 @@ if __name__ == '__main__':
             # pan = cv2.resize(pan, (325, 325))
             # pan = pan[..., np.newaxis]
             # img = np.concatenate([img, pan], axis=2)
-            if img.shape[-1] > 3:
-                img = img[:, :, rgb_index]
+            if channel_no > 8:
+                band_index = rgb_index
+                img = img[:, :, band_index]
             else: img = img
             img = cv2.copyMakeBorder(img, 13, 14, 13, 14, cv2.BORDER_REFLECT_101)
             inp = []
