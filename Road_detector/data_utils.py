@@ -26,10 +26,10 @@ channel_no = 3
 # cities = ['Vegas','Paris']
 # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
 #                      Paris = 'AOI_3_Paris_Roads_Train')
-city_id = -1
-
-means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
-stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
+# city_id = -1
+# 
+# means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
+# stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
 
 ## define means and stds from reading data with npz format
 def means_data(data):
