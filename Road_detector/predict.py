@@ -84,7 +84,7 @@ if __name__ == '__main__':
         else:
             from inception_unet import get_inception_resnet_v2_unet
             model = get_inception_resnet_v2_unet(input_shape)
-        model.load_weights(path.join(models_folder, '{}_weights4_{0}.h5'.format(model_id, it)))
+        model.load_weights(path.join(models_folder, '{}_weights4_{}.h5'.format(model_id, it)))
 
         if not path.isdir(models_folder):
             mkdir(models_folder)
