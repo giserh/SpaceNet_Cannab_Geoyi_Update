@@ -22,6 +22,7 @@ import keras.backend as K
 
 channel_no = 3
 input_shape = (320, 320)
+img_head = 'RGB-PanSharpen_'
 
 # cities = ['Vegas','Paris']
 # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
@@ -73,14 +74,17 @@ def datafiles():
     # for i in range(1, len(sys.argv)):
     #     train_folders.append(sys.argv[i])
     # for city,d in city_datasets.items():
-    masks_folder = os.path.join(os.getcwd(),'wdata/AOI_3_Paris_Roads_Train/masks_smallest')
-    models_folder = os.path.join(os.getcwd(),'wdata/AOI_3_Paris_Roads_Train/nn_models')
+    # masks_folder = os.path.join(os.getcwd(),'wdata/AOI_3_Paris_Roads_Train/masks_smallest')
+    # models_folder = os.path.join(os.getcwd(),'wdata/AOI_3_Paris_Roads_Train/nn_models')
+    imgs_folder = sys.argv[2]
+    masks_folder = os.path.join(os.getcwd(),sys.argv[3])
+    models_folder = os.path.join(os.getcwd(),sys.argv[4])
     if not path.isdir(models_folder):
         mkdir(models_folder)
-    for f in sorted(listdir(path.join(os.getcwd(), 'wdata', 'AOI_3_Paris_Roads_Train', 'MUL'))):
-        if path.isfile(path.join(os.getcwd(), 'wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f)) and '.tif' in f:
-            img_id = f.split('MUL_')[1].split('.')[0]
-            all_files.append(path.join(os.getcwd(), 'wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f))
+    for f in sorted(listdir(path.join(os.getcwd(), imgs_folder))):
+        if path.isfile(path.join(os.getcwd(),imgs_folder, f)) and '.tif' in f:
+            img_id = f.split(img_head)[1].split('.')[0]
+            all_files.append(path.join(os.getcwd(), imgs_folder, f))
                 # all_pan_files.append(path.join(os.getcwd(), 'wdata', d, 'PAN', 'PAN_{0}.tif'.format(img_id)))
                 # cinp = np.zeros((4,))
                 # cid = cities.index(img_id.split('_')[2])

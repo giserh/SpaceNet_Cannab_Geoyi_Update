@@ -17,31 +17,22 @@ from data_utils import means_data, stds_data, preprocess_inputs_std
 
 input_shape = (352, 352)
 channel_no = 3
+img_head = 'RGB-PanSharpen_'
 
 # means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
 # stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
 
-
-# def preprocess_inputs_std(x, city_id):
-#     means = means_data(x)
-#     stds = stds_data(x)
-#     zero_msk = (x == 0)
-#     x = np.asarray(x, dtype='float32')
-#     for i in range(channel_no):
-#         x[..., i] -= means[city_id][i]
-#         x[..., i] /= stds[city_id][i]
-#     x[zero_msk] = 0
-#     return x
 
 
 
 # ignored_cities = [0, 3]
 
 if __name__ == '__main__':
-    models_folder = 'wdata/AOI_3_Paris_Roads_Train/nn_models/'
+    models_folder = os.path.join(os.getcwd(),sys.argv[3])
     pred_folder = 'wdata/predictions'
 
     model_name = 'resnet_NEW_TRAIN'
+    imgs_folder = sys.argv[2]
 
     # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Test_Public',
     #                      Paris = 'AOI_3_Paris_Roads_Test_Public')
@@ -94,14 +85,14 @@ if __name__ == '__main__':
 
     # print('Predictiong fold', it)
     # for city, d in city_datasets.items():
-    for f in tqdm(sorted(listdir(path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL')))):
-        if path.isfile(path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f)) and '.tif' in f:
-            img_id = f.split('MUL_')[1].split('.')[0]
+    for f in tqdm(sorted(listdir(path.join(imgs_folder)))):
+        if path.isfile(path.join(imgs_folder, f)) and '.tif' in f:
+            img_id = f.split(img_head)[1].split('.')[0]
             # cinp = np.zeros((4,))
             # cinp[cities.index(img_id.split('_')[2])] = 1.0
             # cid = cinp.argmax()
 
-            fpath = path.join('wdata', 'AOI_3_Paris_Roads_Train', 'MUL', f)
+            fpath = path.join(imgs_folder, f)
             img = skimage.io.imread(fpath, plugin='tifffile')
             # pan = skimage.io.imread(path.join('wdata', 'AOI_3_Paris_Roads_Test_Public', 'PAN', 'PAN_{0}.tif'.format(img_id)), plugin='tifffile')
             # pan = cv2.resize(pan, (325, 325))
