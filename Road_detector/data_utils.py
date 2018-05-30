@@ -20,7 +20,7 @@ import keras.backend as K
 
 #from other part of data utils improt all_files, all_pan_files, all_masks, city_id
 
-channel_no = 3
+channel_no = 8
 input_shape = (320, 320)
 origin_shape = (325, 325)
 img_head = 'RGB-PanSharpen_'
@@ -125,9 +125,9 @@ def batch_data_generator(train_idx, batch_size):
                 else:
                     img = img
                 # rgb_index = [i for i in range(channel_no)]
-                if img.shape[-1] > 3:
-                    rgb_index = rgb_index
-                    img = img[:, :, rgb_index]
+                if channel_no < 8:
+                    band_index = rgb_index
+                    img = img[:, :, band_index]
                 else: img = img
                 msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0]
 
@@ -177,9 +177,9 @@ def val_data_generator(val_idx, batch_size, validation_steps):
             else:
                 img0 = img0
             # rgb_index = [i for i in range(channel_no)]
-            if img0.shape[-1] > 3:
-                rgb_index = rgb_index
-                img0 = img0[:, :, rgb_index]
+            if channel_no < 8:
+                band_index = rgb_index
+                img0 = img0[:, :, band_index]
             else:
                 img0 = img0
             msk = cv2.imread(all_masks[i], cv2.IMREAD_UNCHANGED)[..., 0:1]
