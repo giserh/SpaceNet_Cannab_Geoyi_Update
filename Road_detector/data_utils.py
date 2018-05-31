@@ -54,8 +54,8 @@ def open_image(fn):
     img = color_scale(img_arr)
     return img
 
-def cache_stats():
-    all_files, _ = datafiles()
+def cache_stats(all_files):
+    # all_files, _ = datafiles()
     imgs_arr = np.stack(open_image(fn) for fn in all_files).astype('float32')
     means = means_data(imgs_arr)
     stds = stds_data(imgs_arr)
@@ -103,8 +103,8 @@ def rotate_image(image, angle, scale):
     rot_mat = cv2.getRotationMatrix2D(image_center, angle, scale)
     result = cv2.warpAffine(image, rot_mat, image.shape[:2],flags=cv2.INTER_LINEAR)
     return result
-
-means, stds = cache_stats()
+all_files, _ =datafiles()
+means, stds = cache_stats(all_files)
 
 def batch_data_generator(train_idx, batch_size):
     all_files, all_masks = datafiles()
