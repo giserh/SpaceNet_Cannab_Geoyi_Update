@@ -62,15 +62,25 @@ def open_image(fn):
     img = color_scale(arr)
     return img
 
-def cache_stats(all_files):
+def cache_stats(imgs_folder):
     # all_files, _ = datafiles()
-    all_arr = []
-    for i in all_files:
-        img = open_image(all_files[i])
-        all_arr.append(img)
-    imgs_arr = np.array(all_arr)
+    imgs = []
+    for f in listdir(path.join(imgs_folder)):
+        if path.isfile(path.join(imgs_folder, f)) and '.tif' in f:
+            # img_id = f.split(img_head)[1].split('.')[0]
+            fpath = path.join(imgs_folder, f)
+            img = open_image(fpath)
+            img_ = np.expand_dims(img, axis=0)
+            imgs.append(img)
+    imgs_arr = np.array(imgs)
+    print(imgs_arr.shape)
+    # all_arr = []
+    # for i in all_files:
+    #     img = open_image(all_files[i])
+    #     all_arr.append(img)
+    imgs_arr_ = np.array(imgs_arr)
     # imgs_arr = np.stack(open_image(fn) for fn in all_files)
-    means, stds = stats_data(imgs_arr)
+    means, stds = stats_data(imgs_arr_)
     # stds = stds_data(imgs_arr)
     print("mean for the dataset is {}".format(means))
     print("Std for the dataset is {}".format(stds))
