@@ -64,7 +64,12 @@ def open_image(fn):
 
 def cache_stats(all_files):
     # all_files, _ = datafiles()
-    imgs_arr = np.stack(open_image(fn) for fn in all_files).astype('float32')
+    all_arr = []
+    for i in all_files:
+        img = open_image(all_files[i])
+        all_arr.append(img)
+    imgs_arr = np.array(all_arr)
+    # imgs_arr = np.stack(open_image(fn) for fn in all_files)
     means, stds = stats_data(imgs_arr)
     # stds = stds_data(imgs_arr)
     print("mean for the dataset is {}".format(means))
