@@ -29,19 +29,23 @@ input_shape = (320, 320)
 batch_size = 16
 # it = -1
 all_files, all_masks = datafiles()
+model_id = sys.argv[1]
+imgs_folder = sys.argv[2]
+masks_folder = sys.argv[3]
+models_folder =sys.argv[4]
 # fold_nums = [0, 1]
 
 # d = 'AOI_3_Paris_Roads_Train'
 # masks_folder = os.path.join(os.getcwd(),'wdata/AOI_3_Paris_Roads_Train/masks_smallest')
 # models_folder = os.path.join(os.getcwd(),'wdata/AOI_3_Paris_Roads_Train/nn_models')
-masks_folder = os.path.join(os.getcwd(),sys.argv[3])
-models_folder = os.path.join(os.getcwd(),sys.argv[4])
+# masks_folder = os.path.join(os.getcwd(),sys.argv[3])
+# models_folder = os.path.join(os.getcwd(),sys.argv[4])
 # means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
 # stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
 
 t0 = timeit.default_timer()
 
-model_id = sys.argv[1]
+# model_id = sys.argv[1]
 if model_id == 'resnet_unet':
     from resnet_unet import get_resnet_unet
     model = get_resnet_unet(input_shape, channel_no)

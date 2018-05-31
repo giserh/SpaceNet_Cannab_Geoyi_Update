@@ -126,7 +126,7 @@ def rotate_image(image, angle, scale):
     return result
 
 all_files, _ =datafiles()
-means, stds = cache_stats(all_files)
+means, stds = cache_stats(imgs_folder)
 
 def batch_data_generator(train_idx, batch_size):
     all_files, all_masks = datafiles()
