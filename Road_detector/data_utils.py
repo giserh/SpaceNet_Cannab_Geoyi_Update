@@ -27,7 +27,10 @@ origin_shape = (325, 325)
 img_head = 'RGB-PanSharpen_'
 # rgb_index = [5, 4, 3]
 rgb_index = [0, 1, 2]
-
+model_id = sys.argv[1]
+imgs_folder = sys.argv[2]
+masks_folder = sys.argv[3]
+models_folder =sys.argv[4]
 ## define means and stds from reading data with npz format
 def stats_data(data):
     if len(data.shape) > 3:
@@ -51,7 +54,7 @@ def color_scale(arr):
     img_arr = arr - np.min(arr, axis = (0, 1))
     data_max_val = np.percentile(img_arr, 98.0, axis=(0, 1))
     img_arr_ = img_arr / data_max_val * 255.0
-    str_arr = np.clip(img_arr_, 0, 255.0, img_arr_)
+    str_arr = np.clip(img_arr_, 0., 255.0, img_arr_)
     # arr = np.percentile(arr, 98., axis = axis)
     # str_arr = (arr - np.min(arr, axis = axis))*255.0/(np.max(arr, axis = axis) - np.min(arr, axis = axis))
     return str_arr
@@ -73,18 +76,18 @@ def cache_stats(imgs_folder):
             img_ = np.expand_dims(img, axis=0)
             imgs.append(img)
     imgs_arr = np.array(imgs)
-    print(imgs_arr.shape)
+    # print(imgs_arr.shape)
     # all_arr = []
     # for i in all_files:
     #     img = open_image(all_files[i])
     #     all_arr.append(img)
-    imgs_arr_ = np.array(imgs_arr)
+    # imgs_arr_ = np.array(imgs_arr)
     # imgs_arr = np.stack(open_image(fn) for fn in all_files)
-    means, stds = stats_data(imgs_arr_)
+    dt_means, dt_stds = stats_data(imgs_arr)
     # stds = stds_data(imgs_arr)
-    print("mean for the dataset is {}".format(means))
-    print("Std for the dataset is {}".format(stds))
-    return means,stds
+    print("mean for the dataset is {}".format(dt_means))
+    print("Std for the dataset is {}".format(dt_stds))
+    return dt_means,dt_stds
 
 def preprocess_inputs_std(x, mean, std):
     """The means and stds are train and validation base.
@@ -125,7 +128,7 @@ def rotate_image(image, angle, scale):
     result = cv2.warpAffine(image, rot_mat, image.shape[:2],flags=cv2.INTER_LINEAR)
     return result
 
-all_files, _ =datafiles()
+# all_files, _ =datafiles()
 means, stds = cache_stats(imgs_folder)
 
 def batch_data_generator(train_idx, batch_size):
