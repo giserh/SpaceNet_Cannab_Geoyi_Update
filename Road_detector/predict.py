@@ -33,7 +33,7 @@ rgb_index = [0, 1, 2]
 # ignored_cities = [0, 3]
 
 if __name__ == '__main__':
-    models_folder = os.path.join(os.getcwd(),sys.argv[3])
+    models_folder = os.path.join(os.getcwd(),sys.argv[4])
     pred_folder = 'wdata/predictions'
 
     model_name = 'resnet_NEW_TRAIN'
@@ -75,12 +75,12 @@ if __name__ == '__main__':
         mkdir(path.join(path.join(pred_folder, model_name)))
     if model_id == 'resnet_unet':
         from resnet_unet import get_resnet_unet
-        model = get_resnet_unet(input_shape)
+        model = get_resnet_unet(input_shape, channel_no)
         # model.load_weights(path.join(models_folder, '{}_weights4_{0}.h5'.format(model_id, it)))
         # models.append(model)
     else:
         from inception_unet import get_inception_resnet_v2_unet
-        model = get_inception_resnet_v2_unet(input_shape)
+        model = get_inception_resnet_v2_unet(input_shape, channel_no)
     model.load_weights(path.join(models_folder, '{}_weights4.h5'.format(model_id)))
 
     if not path.isdir(models_folder):
