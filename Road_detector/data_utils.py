@@ -27,6 +27,7 @@ origin_shape = (325, 325)
 img_head = 'RGB-PanSharpen_'
 # rgb_index = [5, 4, 3]
 rgb_index = [0, 1, 2]
+
 ## define means and stds from reading data with npz format
 def means_data(data):
     axis = tuple([i for i in range(data.shape[-1])])
@@ -47,7 +48,8 @@ def strecth_rgb(arr):
     return str_arr
 
 def open_image(fn):
-    img_arr =np.array(Image.open(fn))
+    img_arr = skimage.io.imread(fn, plugin='tifffile')
+    #np.array(Image.open(fn))
     img = strecth_rgb(img_arr)
     return img
 
