@@ -63,13 +63,13 @@ def cache_stats():
     return means,stds
 
 
-def preprocess_inputs_std(x):
+def preprocess_inputs_std(x, means, stds):
     """The means and stds are train and validation base.
     It need to be train's stds and means. It might be ok since we are doing KFold split here"""
     # means = means_data(x)
     # stds = stds_data(x)
     zero_msk = (x == 0)
-    means, stds = cache_stats()
+    # means, stds = cache_stats()
     x = np.asarray(x, dtype='float32')
     x -= means
     x /= stds
@@ -151,7 +151,7 @@ def batch_data_generator(train_idx, batch_size):
             if len(inputs) == batch_size:
                 inputs = np.asarray(inputs)
                 outputs = np.asarray(outputs, dtype='float')
-                inputs = preprocess_inputs_std(inputs)
+                inputs = preprocess_inputs_std(outputs, means, stds)
                 yield inputs, outputs
                 inputs = []
                 outputs = []
@@ -185,7 +185,7 @@ def val_data_generator(val_idx, batch_size, validation_steps):
                     step_id += 1
                     inputs = np.asarray(inputs)
                     outputs = np.asarray(outputs, dtype='float')
-                    inputs = preprocess_inputs_std(inputs)
+                    inputs = preprocess_inputs_std(outputs, means, stds)
                     yield inputs, outputs
                     inputs = []
                     outputs = []

@@ -16,7 +16,7 @@ from keras.callbacks import ModelCheckpoint
 from loss import dice_coef, dice_logloss2, dice_logloss3, dice_coef_rounded, dice_logloss
 import skimage.io
 import keras.backend as K
-from data_utils import datafiles, means_data, stds_data, preprocess_inputs_std, rotate_image, batch_data_generator, val_data_generator
+from data_utils import datafiles, means_data, stds_data, cache_stats, preprocess_inputs_std, rotate_image, batch_data_generator, val_data_generator
 
 #from other part of data utils improt all_files, all_pan_files, all_masks, city_id
 
@@ -26,6 +26,7 @@ input_shape = (320, 320)
 # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
 #                      Paris = 'AOI_3_Paris_Roads_Train')
 # city_id = -1
+means, stds = cache_stats()
 batch_size = 16
 # it = -1
 all_files, all_masks = datafiles()
