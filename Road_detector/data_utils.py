@@ -44,8 +44,12 @@ def stds_data(data):
 def color_scale(arr):
     """correct the wv-3 bands to be a composed bands of value between 0 255"""
     axis = tuple([i for i in range(arr.shape[-1])])
-    arr = np.percentile(arr, 98., axis = axis)
-    str_arr = (arr - np.min(arr, axis = axis))*255.0/(np.max(arr, axis = axis) - np.min(arr, axis = axis))
+    img_arr = arr - np.min(arr, (0, 1))
+    data_max_val = np.percentile(img_arr, 98.0, axis=(0, 1))
+    img_arr = img_arr / data_max_val * 255.0
+    str_arr = np.clip(img_arr, 0, 255.0, img_arr)
+    # arr = np.percentile(arr, 98., axis = axis)
+    # str_arr = (arr - np.min(arr, axis = axis))*255.0/(np.max(arr, axis = axis) - np.min(arr, axis = axis))
     return str_arr
 
 def open_image(fn):
@@ -62,8 +66,6 @@ def cache_stats(all_files):
     print("mean for the dataset is {}".format(means))
     print("Std for the dataset is {}".format(stds))
     return means,stds
-
-
 
 def preprocess_inputs_std(x, means, stds):
     """The means and stds are train and validation base.

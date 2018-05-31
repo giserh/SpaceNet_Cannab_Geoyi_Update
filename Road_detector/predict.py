@@ -13,7 +13,7 @@ import cv2
 # from models import get_resnet_unet
 import skimage.io
 from tqdm import tqdm
-from data_utils import means_data, stds_data, preprocess_inputs_std
+from data_utils import means_data, stds_data, preprocess_inputs_std, datafiles, cache_stats
 
 input_shape = (352, 352)
 # input_shape for the prediction is inputshape[0] + 14 + 13
@@ -100,7 +100,8 @@ if __name__ == '__main__':
             # cid = cinp.argmax()
 
             fpath = path.join(imgs_folder, f)
-            img = skimage.io.imread(fpath, plugin='tifffile')
+            img = open_image(fpath)
+            # skimage.io.imread(fpath, plugin='tifffile')
             if img.shape[0] != origin_shape[0]:
                 img= cv2.resize(img, origin_shape)
             else:
