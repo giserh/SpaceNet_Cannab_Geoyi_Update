@@ -63,6 +63,7 @@ def cache_stats():
     return means,stds
 
 
+
 def preprocess_inputs_std(x, means, stds):
     """The means and stds are train and validation base.
     It need to be train's stds and means. It might be ok since we are doing KFold split here"""
@@ -102,6 +103,7 @@ def rotate_image(image, angle, scale):
     result = cv2.warpAffine(image, rot_mat, image.shape[:2],flags=cv2.INTER_LINEAR)
     return result
 
+means, stds = cache_stats()
 
 def batch_data_generator(train_idx, batch_size):
     all_files, all_masks = datafiles()
@@ -151,7 +153,7 @@ def batch_data_generator(train_idx, batch_size):
             if len(inputs) == batch_size:
                 inputs = np.asarray(inputs)
                 outputs = np.asarray(outputs, dtype='float')
-                inputs = preprocess_inputs_std(outputs, means, stds)
+                inputs = preprocess_inputs_std(inputs, means, stds)
                 yield inputs, outputs
                 inputs = []
                 outputs = []
@@ -185,7 +187,7 @@ def val_data_generator(val_idx, batch_size, validation_steps):
                     step_id += 1
                     inputs = np.asarray(inputs)
                     outputs = np.asarray(outputs, dtype='float')
-                    inputs = preprocess_inputs_std(outputs, means, stds)
+                    inputs = preprocess_inputs_std(inputs, means, stds)
                     yield inputs, outputs
                     inputs = []
                     outputs = []

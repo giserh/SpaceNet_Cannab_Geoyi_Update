@@ -26,7 +26,6 @@ input_shape = (320, 320)
 # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
 #                      Paris = 'AOI_3_Paris_Roads_Train')
 # city_id = -1
-means, stds = cache_stats()
 batch_size = 16
 # it = -1
 all_files, all_masks = datafiles()
