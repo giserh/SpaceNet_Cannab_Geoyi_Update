@@ -32,7 +32,7 @@ rgb_index = [0, 1, 2]
 def means_data(data):
     axis = tuple([i for i in range(data.shape[-1])])
     means = np.mean(data, axis = axis)
-    print(means)
+    # print(means)
     return means
 
 def stds_data(data):
@@ -41,8 +41,8 @@ def stds_data(data):
     # print(stds)
     return stds
 
-def strecth_rgb(arr):
-    """strecth the wv-3 bands to be a composed RGB image (value 0-255)"""
+def color_scale(arr):
+    """correct the wv-3 bands to be a composed bands of value between 0 255"""
     axis = tuple([i for i in range(arr.shape[-1])])
     str_arr = (arr - np.min(arr, axis = axis))*255.0/(np.max(arr, axis = axis) - np.min(arr, axis = axis))
     return str_arr
@@ -50,7 +50,7 @@ def strecth_rgb(arr):
 def open_image(fn):
     img_arr = skimage.io.imread(fn, plugin='tifffile')
     #np.array(Image.open(fn))
-    img = strecth_rgb(img_arr)
+    img = color_scale(img_arr)
     return img
 
 def cache_stats():
