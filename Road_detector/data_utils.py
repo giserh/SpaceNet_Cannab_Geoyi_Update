@@ -18,7 +18,7 @@ from resnet_unet import get_resnet_unet
 from loss import dice_coef, dice_logloss2, dice_logloss3, dice_coef_rounded, dice_logloss
 import skimage.io
 import keras.backend as K
-
+np.seterr(divide='ignore', invalid='ignore')
 #from other part of data utils improt all_files, all_pan_files, all_masks, city_id
 
 channel_no = 3
@@ -43,19 +43,19 @@ def stds_data(data):
 
 def color_scale(arr):
     """correct the wv-3 bands to be a composed bands of value between 0 255"""
-    axis = tuple([i for i in range(arr.shape[-1])])
-    img_arr = arr - np.min(arr, (0, 1))
+    # axis = tuple([i for i in range(arr.shape[-1])])
+    img_arr = arr - np.min(arr, axis = (0, 1))
     data_max_val = np.percentile(img_arr, 98.0, axis=(0, 1))
-    img_arr = img_arr / data_max_val * 255.0
-    str_arr = np.clip(img_arr, 0, 255.0, img_arr)
+    img_arr_ = img_arr / data_max_val * 255.0
+    str_arr = np.clip(img_arr_, 0, 255.0, img_arr_)
     # arr = np.percentile(arr, 98., axis = axis)
     # str_arr = (arr - np.min(arr, axis = axis))*255.0/(np.max(arr, axis = axis) - np.min(arr, axis = axis))
     return str_arr
 
 def open_image(fn):
-    img_arr = skimage.io.imread(fn, plugin='tifffile')
+    arr = skimage.io.imread(fn, plugin='tifffile')
     #np.array(Image.open(fn))
-    img = color_scale(img_arr)
+    img = color_scale(arr)
     return img
 
 def cache_stats(all_files):

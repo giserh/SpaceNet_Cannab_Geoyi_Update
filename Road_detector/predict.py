@@ -14,6 +14,7 @@ import cv2
 import skimage.io
 from tqdm import tqdm
 from data_utils import means_data, stds_data, preprocess_inputs_std, datafiles, cache_stats
+np.seterr(divide='ignore', invalid='ignore')
 
 input_shape = (352, 352)
 # input_shape for the prediction is inputshape[0] + 14 + 13
