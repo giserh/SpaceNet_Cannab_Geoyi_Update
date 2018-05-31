@@ -29,15 +29,20 @@ img_head = 'RGB-PanSharpen_'
 rgb_index = [0, 1, 2]
 
 ## define means and stds from reading data with npz format
-def means_data(data):
-    means = np.mean(data, axis = (0,1,2))
+def stats_data(data):
+    if len(data.shape) > 3:
+        means = np.mean(data, axis = (0, 1, 2))
+        stds = np.std(data, axis = (0, 1, 2))
+    else:
+        means = np.mean(data, axis = (0, 1))
+        stds = np.std(data, axis = (0, 1))
     # print(means)
-    return means
-
-def stds_data(data):
-    stds = np.std(data, axis = (0, 1, 2))
-    # print(stds)
-    return stds
+    return means, stds
+#
+# def stds_data(data):
+#     stds = np.std(data, axis = (0, 1, 2))
+#     # print(stds)
+#     return stds
 
 def color_scale(arr):
     """correct the wv-3 bands to be a composed bands of value between 0 255"""
@@ -60,13 +65,13 @@ def open_image(fn):
 def cache_stats(all_files):
     # all_files, _ = datafiles()
     imgs_arr = np.stack(open_image(fn) for fn in all_files).astype('float32')
-    means = means_data(imgs_arr)
-    stds = stds_data(imgs_arr)
+    means, stds = stats_data(imgs_arr)
+    # stds = stds_data(imgs_arr)
     print("mean for the dataset is {}".format(means))
     print("Std for the dataset is {}".format(stds))
     return means,stds
 
-def preprocess_inputs_std(x, means, stds):
+def preprocess_inputs_std(x, mean, std):
     """The means and stds are train and validation base.
     It need to be train's stds and means. It might be ok since we are doing KFold split here"""
     # means = means_data(x)
@@ -74,8 +79,8 @@ def preprocess_inputs_std(x, means, stds):
     zero_msk = (x == 0)
     # means, stds = cache_stats()
     x = np.asarray(x, dtype='float32')
-    x -= means
-    x /= stds
+    x -= mean
+    x /= std
     x[zero_msk] = 0
     return x
 
@@ -104,6 +109,7 @@ def rotate_image(image, angle, scale):
     rot_mat = cv2.getRotationMatrix2D(image_center, angle, scale)
     result = cv2.warpAffine(image, rot_mat, image.shape[:2],flags=cv2.INTER_LINEAR)
     return result
+
 all_files, _ =datafiles()
 means, stds = cache_stats(all_files)
 
