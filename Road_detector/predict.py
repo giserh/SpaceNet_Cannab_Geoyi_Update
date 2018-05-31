@@ -25,7 +25,13 @@ img_head = 'RGB-PanSharpen_'
 rgb_index = [0, 1, 2]
 all_files, _ =datafiles()
 means, stds = cache_stats(all_files)
+pred_folder = 'wdata/predictions'
 
+model_name = 'resnet_NEW_TRAIN'
+model_id = sys.argv[1]
+imgs_folder = sys.argv[2]
+masks_folder = sys.argv[3]
+models_folder =sys.argv[4]
 # means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
 # stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
 
@@ -35,12 +41,6 @@ means, stds = cache_stats(all_files)
 # ignored_cities = [0, 3]
 
 if __name__ == '__main__':
-    models_folder = os.path.join(os.getcwd(),sys.argv[4])
-    pred_folder = 'wdata/predictions'
-
-    model_name = 'resnet_NEW_TRAIN'
-    imgs_folder = sys.argv[2]
-    rgb_index = [0, 1, 2]
 
     # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Test_Public',
     #                      Paris = 'AOI_3_Paris_Roads_Test_Public')
@@ -48,7 +48,6 @@ if __name__ == '__main__':
     # cities = ['Vegas', 'Paris']
     # cities = city_datasets.values()
     # models = dict(resnet_unet = get_resnet_unet(input_shape, weights=None), inception_unet = get_inception_resnet_v2_unet(input_shape, weights=None))
-    model_id = sys.argv[1]
 
     t0 = timeit.default_timer()
     #
@@ -64,7 +63,7 @@ if __name__ == '__main__':
         mkdir(path.join(pred_folder, model_name))
 
     # for it in [0, 1]:
-    models = []
+    # models = []
 
     if not path.isdir(path.join(pred_folder, model_name)):
         mkdir(path.join(pred_folder, model_name))
@@ -111,10 +110,11 @@ if __name__ == '__main__':
             # pan = cv2.resize(pan, (325, 325))
             # pan = pan[..., np.newaxis]
             # img = np.concatenate([img, pan], axis=2)
-            if channel_no < 8:
+            if channel_no == 8:
+                img = img
+            else:
                 band_index = rgb_index
                 img = img[:, :, band_index]
-            else: img = img
             img = cv2.copyMakeBorder(img, 13, 14, 13, 14, cv2.BORDER_REFLECT_101)
             inp = []
             inp.append(img)
