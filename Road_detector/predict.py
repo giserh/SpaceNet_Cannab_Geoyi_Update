@@ -23,6 +23,7 @@ border = (13, 14)
 channel_no = 3
 img_head = 'RGB-PanSharpen_'
 rgb_index = [0, 1, 2]
+means, stds = cache_stats()
 
 # means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
 # stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
@@ -118,7 +119,7 @@ if __name__ == '__main__':
             inp.append(img)
             inp.append(np.rot90(img, k=1))
             inp = np.asarray(inp)
-            inp = preprocess_inputs_std(inp)
+            inp = preprocess_inputs_std(inp, means, stds)
             pred = model.predict(inp)
             mask = pred[0] + np.rot90(pred[1], k=3)
             mask /= 2
