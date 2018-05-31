@@ -44,6 +44,7 @@ def stds_data(data):
 def color_scale(arr):
     """correct the wv-3 bands to be a composed bands of value between 0 255"""
     # axis = tuple([i for i in range(arr.shape[-1])])
+    arr = np.nan_to_num(arr)
     img_arr = arr - np.min(arr, axis = (0, 1))
     data_max_val = np.percentile(img_arr, 98.0, axis=(0, 1))
     img_arr_ = img_arr / data_max_val * 255.0
