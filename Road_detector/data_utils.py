@@ -30,14 +30,12 @@ rgb_index = [0, 1, 2]
 
 ## define means and stds from reading data with npz format
 def means_data(data):
-    axis = tuple([i for i in range(data.shape[-1])])
-    means = np.mean(data, axis = axis)
+    means = np.mean(data, axis = (0,1,2))
     # print(means)
     return means
 
 def stds_data(data):
-    axis = tuple([i for i in range(data.shape[-1])])
-    stds = np.std(data, axis = axis)
+    stds = np.std(data, axis = (0, 1, 2))
     # print(stds)
     return stds
 
