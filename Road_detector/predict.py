@@ -20,8 +20,9 @@ input_shape = (352, 352)
 origin_shape = (325, 325)
 border = (13, 14)
 
-channel_no = 8
+channel_no = 3
 img_head = 'RGB-PanSharpen_'
+rgb_index = [0, 1, 2]
 
 # means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
 # stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]

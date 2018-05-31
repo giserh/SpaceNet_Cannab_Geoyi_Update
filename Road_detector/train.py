@@ -20,7 +20,7 @@ from data_utils import datafiles, means_data, stds_data, preprocess_inputs_std, 
 
 #from other part of data utils improt all_files, all_pan_files, all_masks, city_id
 
-# channel_no = 8
+channel_no = 3
 input_shape = (320, 320)
 # cities = ['Vegas','Paris']
 # city_datasets = dict(Vegas = 'AOI_2_Vegas_Roads_Train',
