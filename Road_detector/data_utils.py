@@ -18,19 +18,14 @@ from resnet_unet import get_resnet_unet
 from loss import dice_coef, dice_logloss2, dice_logloss3, dice_coef_rounded, dice_logloss
 import skimage.io
 import keras.backend as K
-np.seterr(divide='ignore', invalid='ignore')
-
 
 channel_no = 3
 input_shape = (320, 320)
 origin_shape = (325, 325)
 img_head = 'RGB-PanSharpen_'
-# rgb_index = [5, 4, 3]
+
 rgb_index = [0, 1, 2]
-model_id = sys.argv[1]
-imgs_folder = sys.argv[2]
-masks_folder = sys.argv[3]
-models_folder =sys.argv[4]
+
 
 def stats_data(data):
     if len(data.shape) > 3:
@@ -103,9 +98,9 @@ def rotate_image(image, angle, scale):
     result = cv2.warpAffine(image, rot_mat, image.shape[:2],flags=cv2.INTER_LINEAR)
     return result
 
-means, stds = cache_stats(imgs_folder)
+ # = cache_stats(imgs_folder)
 
-def batch_data_generator(train_idx, batch_size):
+def batch_data_generator(train_idx, batch_size, means, stds):
     all_files, all_masks = datafiles()
     inputs = []
     outputs = []
@@ -159,7 +154,7 @@ def batch_data_generator(train_idx, batch_size):
                 inputs = []
                 outputs = []
 
-def val_data_generator(val_idx, batch_size, validation_steps):
+def val_data_generator(val_idx, batch_size, validation_steps, means, stds):
     all_files,all_masks = datafiles()
     while True:
         inputs = []

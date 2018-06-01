@@ -18,7 +18,6 @@ import skimage.io
 import keras.backend as K
 from data_utils import datafiles, stats_data, cache_stats, preprocess_inputs_std, rotate_image, batch_data_generator, val_data_generator
 
-#from other part of data utils improt all_files, all_pan_files, all_masks, city_id
 
 channel_no = 3
 input_shape = (320, 320)
@@ -27,6 +26,8 @@ model_id = sys.argv[1]
 imgs_folder = sys.argv[2]
 masks_folder = sys.argv[3]
 models_folder =sys.argv[4]
+all_files, all_masks = datafiles()
+means, stds = cache_stats(imgs_folder)
 
 t0 = timeit.default_timer()
 
@@ -42,18 +43,10 @@ if not path.isdir(models_folder):
 
 kf = KFold(n_splits=4, shuffle=True, random_state=1)
 for all_train_idx, all_val_idx in kf.split(all_files):
-    # it += 1
-    #
-    # if it not in fold_nums:
-    #   continue
-
-    # for cid, city_ in enumerate(cities):
-      # city_id = cid
     train_idx = []
     val_idx = []
 
     for i in all_train_idx:
-      # if all_city_inp[i][city_id] == 1:
         train_idx.append(i)
     for i in all_val_idx:
         val_idx.append(i)
@@ -62,19 +55,14 @@ for all_train_idx, all_val_idx in kf.split(all_files):
     steps_per_epoch = int(len(train_idx) / batch_size)
 
     if validation_steps == 0 or steps_per_epoch == 0:
-      # print("No data for city", cities[city_id])
       continue
 
-    # print('Training city', cities[city_id], 'fold', it)
     print('steps_per_epoch', steps_per_epoch, 'validation_steps', validation_steps)
 
     np.random.seed(11)
     random.seed(11)
     tf.set_random_seed(11)
 
-    # print('Training model', it, cities[city_id])
-
-    ## change loss functions - 2018-05-30 12:14
 
     model.compile(loss=dice_logloss3,
                 optimizer=SGD(lr=5e-2, decay=1e-6, momentum=0.9, nesterov=True),
@@ -82,9 +70,9 @@ for all_train_idx, all_val_idx in kf.split(all_files):
 
     model_checkpoint = ModelCheckpoint(path.join(models_folder, '{}_weights.h5'.format(model_id)), monitor='val_dice_coef_rounded',
                                      save_best_only=True, save_weights_only=True, mode='max')
-    model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
+    model.fit_generator(generator=batch_data_generator(train_idx, batch_size, means, stds),
                         epochs=25, steps_per_epoch=steps_per_epoch, verbose=2,
-                        validation_data=val_data_generator(val_idx, batch_size, validation_steps),
+                        validation_data=val_data_generator(val_idx, batch_size, validation_steps, means, stds),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint])
     for l in model.layers:
@@ -93,15 +81,15 @@ for all_train_idx, all_val_idx in kf.split(all_files):
                 optimizer=Adam(lr=1e-3),
                 metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
 
-    model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
+    model.fit_generator(generator=batch_data_generator(train_idx, batch_size, means, stds),
                         epochs=40, steps_per_epoch=steps_per_epoch, verbose=2,
-                        validation_data=val_data_generator(val_idx, batch_size, validation_steps),
+                        validation_data=val_data_generator(val_idx, batch_size, validation_steps, means, stds),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint])
     model.optimizer = Adam(lr=2e-4)
-    model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
+    model.fit_generator(generator=batch_data_generator(train_idx, batch_size, means, stds),
                         epochs=25, steps_per_epoch=steps_per_epoch, verbose=2,
-                        validation_data=val_data_generator(val_idx, batch_size, validation_steps),
+                        validation_data=val_data_generator(val_idx, batch_size, validation_steps, means, stds),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint])
 
@@ -114,15 +102,15 @@ for all_train_idx, all_val_idx in kf.split(all_files):
                 metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
     model_checkpoint2 = ModelCheckpoint(path.join(models_folder, '{}_weights2.h5'.format(model_id)), monitor='val_dice_coef_rounded',
                                      save_best_only=True, save_weights_only=True, mode='max')
-    model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
+    model.fit_generator(generator=batch_data_generator(train_idx, batch_size, means, stds),
                         epochs=30, steps_per_epoch=steps_per_epoch, verbose=2,
-                        validation_data=val_data_generator(val_idx, batch_size, validation_steps),
+                        validation_data=val_data_generator(val_idx, batch_size, validation_steps, means, stds),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint2])
     optimizer=Adam(lr=1e-5)
-    model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
+    model.fit_generator(generator=batch_data_generator(train_idx, batch_size, means, stds),
                         epochs=20, steps_per_epoch=steps_per_epoch, verbose=2,
-                        validation_data=val_data_generator(val_idx, batch_size, validation_steps),
+                        validation_data=val_data_generator(val_idx, batch_size, validation_steps, means, stds),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint2])
 
@@ -135,9 +123,9 @@ for all_train_idx, all_val_idx in kf.split(all_files):
                 metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
     model_checkpoint3 = ModelCheckpoint(path.join(models_folder, '{}_weights3.h5'.format(model_id)), monitor='val_dice_coef_rounded',
                                      save_best_only=True, save_weights_only=True, mode='max')
-    model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
+    model.fit_generator(generator=batch_data_generator(train_idx, batch_size, means, stds),
                         epochs=50, steps_per_epoch=steps_per_epoch, verbose=2,
-                        validation_data=val_data_generator(val_idx, batch_size, validation_steps),
+                        validation_data=val_data_generator(val_idx, batch_size, validation_steps, means, stds),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint3])
 
@@ -150,9 +138,9 @@ for all_train_idx, all_val_idx in kf.split(all_files):
                 metrics=[dice_coef, dice_coef_rounded, metrics.binary_crossentropy])
     model_checkpoint4 = ModelCheckpoint(path.join(models_folder, '{}_weights4.h5'.format(model_id)), monitor='val_dice_coef_rounded',
                                      save_best_only=True, save_weights_only=True, mode='max')
-    model.fit_generator(generator=batch_data_generator(train_idx, batch_size),
+    model.fit_generator(generator=batch_data_generator(train_idx, batch_size, means, stds),
                         epochs=50, steps_per_epoch=steps_per_epoch, verbose=2,
-                        validation_data=val_data_generator(val_idx, batch_size, validation_steps),
+                        validation_data=val_data_generator(val_idx, batch_size, validation_steps, means, stds),
                         validation_steps=validation_steps,
                         callbacks=[model_checkpoint4])
     K.clear_session()
