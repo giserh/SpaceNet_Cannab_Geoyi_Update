@@ -73,10 +73,6 @@ def get_linknet(input_shape=(512, 512)):
     dec2 = layers.add([dec2, enc1])
     dec1 = linknet_deconv_block(dec2, 64, 64)
 
-#    x = Conv2DTranspose(64, (3, 3), strides=(2, 2), padding='same')(dec1)
-#    x = BatchNormalization(axis=bn_axis)(x)
-#    x = Activation('relu')(x)
-
     x = Conv2D(48, (3, 3), padding='same')(dec1)
     x = BatchNormalization(axis=bn_axis)(x)
     x = Activation('relu')(x)

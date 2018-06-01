@@ -148,8 +148,6 @@ def batch_data_generator(train_idx, batch_size, means, stds):
                 inputs = np.asarray(inputs)
                 outputs = np.asarray(outputs, dtype='float')
                 inputs = preprocess_inputs_std(inputs, means, stds)
-                print(inputs.shape, outputs.shape)
-                print(np.unique(inputs))
                 yield inputs, outputs
                 inputs = []
                 outputs = []

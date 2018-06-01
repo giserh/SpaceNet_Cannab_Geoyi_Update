@@ -34,9 +34,14 @@ t0 = timeit.default_timer()
 if model_id == 'resnet_unet':
     from resnet_unet import get_resnet_unet
     model = get_resnet_unet(input_shape, channel_no)
-else:
+elif model_id == 'inception_unet':
     from inception_unet import get_inception_resnet_v2_unet
     model = get_inception_resnet_v2_unet(input_shape, channel_no)
+elif model_id == 'linknet_unet':
+    from linknet_unet import get_resnet50_linknet
+    model = get_resnet50_linknet(input_shape, channel_no)
+else:
+    print('No model loaded!')
 
 if not path.isdir(models_folder):
     mkdir(models_folder)

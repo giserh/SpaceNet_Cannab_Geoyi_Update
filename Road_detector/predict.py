@@ -32,13 +32,6 @@ imgs_folder = sys.argv[2]
 masks_folder = sys.argv[3]
 models_folder =sys.argv[4]
 means, stds = cache_stats(imgs_folder)
-# means = [[290.42, 446.84, 591.88], [178.33, 260.14, 287.4]]
-# stds = [[75.42, 177.98, 288.81], [16.4, 45.69, 79.42]]
-
-
-
-
-# ignored_cities = [0, 3]
 
 if __name__ == '__main__':
 
