@@ -80,7 +80,7 @@ def get_resnet_unet(input_shape,channel_no, weights='imagenet'):
     model = Model(inp, res)
 
     if weights == 'imagenet':
-        resnet = ResNet50(input_shape=input_shape + (channel_no,), include_top=False, weights=weights)
+        resnet = ResNet50(input_shape=input_shape + (3,), include_top=False, weights=weights)
         for i in range(2, len(resnet.layers)-1):
             model.layers[i].set_weights(resnet.layers[i].get_weights())
             model.layers[i].trainable = False

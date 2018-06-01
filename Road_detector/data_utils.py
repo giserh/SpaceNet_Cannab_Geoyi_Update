@@ -19,7 +19,7 @@ from loss import dice_coef, dice_logloss2, dice_logloss3, dice_coef_rounded, dic
 import skimage.io
 import keras.backend as K
 np.seterr(divide='ignore', invalid='ignore')
-#from other part of data utils improt all_files, all_pan_files, all_masks, city_id
+
 
 channel_no = 3
 input_shape = (320, 320)
@@ -31,7 +31,7 @@ model_id = sys.argv[1]
 imgs_folder = sys.argv[2]
 masks_folder = sys.argv[3]
 models_folder =sys.argv[4]
-## define means and stds from reading data with npz format
+
 def stats_data(data):
     if len(data.shape) > 3:
         means = np.mean(data, axis = (0, 1, 2))
@@ -41,22 +41,11 @@ def stats_data(data):
         stds = np.std(data, axis = (0, 1))
     print(means)
     return means, stds
-#
-# def stds_data(data):
-#     stds = np.std(data, axis = (0, 1, 2))
-#     # print(stds)
-#     return stds
 
 def color_scale(arr):
     """correct the wv-3 bands to be a composed bands of value between 0 255"""
-    # axis = tuple([i for i in range(arr.shape[-1])])
-    arr = np.nan_to_num(arr)
-    img_arr = arr - np.min(arr, axis = (0, 1))
-    data_max_val = np.percentile(img_arr, 98.0, axis=(0, 1))
-    img_arr_ = img_arr / data_max_val * 255.0
-    str_arr = np.clip(img_arr_, 0., 255.0, img_arr_)
-    # arr = np.percentile(arr, 98., axis = axis)
-    # str_arr = (arr - np.min(arr, axis = axis))*255.0/(np.max(arr, axis = axis) - np.min(arr, axis = axis))
+    axis = (0, 1)
+    str_arr = (arr - np.min(arr, axis = axis))*255.0/(np.max(arr, axis = axis) - np.min(arr, axis = axis))
     return str_arr
 
 def open_image(fn):
@@ -65,28 +54,23 @@ def open_image(fn):
     return img
 
 def cache_stats(imgs_folder):
-    # all_files, _ = datafiles()
     imgs = []
     for f in listdir(path.join(imgs_folder)):
         if path.isfile(path.join(imgs_folder, f)) and '.tif' in f:
-            # img_id = f.split(img_head)[1].split('.')[0]
             fpath = path.join(imgs_folder, f)
             img = open_image(fpath)
             img_ = np.expand_dims(img, axis=0)
             imgs.append(img)
     imgs_arr = np.array(imgs)
     dt_means, dt_stds = stats_data(imgs_arr)
-    print("mean for the dataset is {}".format(dt_means))
-    print("Std for the dataset is {}".format(dt_stds))
+    # print("mean for the dataset is {}".format(dt_means))
+    # print("Std for the dataset is {}".format(dt_stds))
     return dt_means,dt_stds
 
 def preprocess_inputs_std(x, mean, std):
     """The means and stds are train and validation base.
     It need to be train's stds and means. It might be ok since we are doing KFold split here"""
-    # means = means_data(x)
-    # stds = stds_data(x)
     zero_msk = (x == 0)
-    # means, stds = cache_stats()
     x = np.asarray(x, dtype='float32')
     x -= mean
     x /= std
@@ -119,7 +103,6 @@ def rotate_image(image, angle, scale):
     result = cv2.warpAffine(image, rot_mat, image.shape[:2],flags=cv2.INTER_LINEAR)
     return result
 
-# all_files, _ =datafiles()
 means, stds = cache_stats(imgs_folder)
 
 def batch_data_generator(train_idx, batch_size):
@@ -129,7 +112,6 @@ def batch_data_generator(train_idx, batch_size):
     while True:
         np.random.shuffle(train_idx)
         for i in train_idx:
-            # img = skimage.io.imread(all_files[i], plugin='tifffile')
             img = open_image(all_files[i])
             if img.shape[0] != origin_shape[0]:
                 img= cv2.resize(img, origin_shape)
@@ -171,6 +153,8 @@ def batch_data_generator(train_idx, batch_size):
                 inputs = np.asarray(inputs)
                 outputs = np.asarray(outputs, dtype='float')
                 inputs = preprocess_inputs_std(inputs, means, stds)
+                print(inputs.shape, outputs.shape)
+                print(np.unique(inputs))
                 yield inputs, outputs
                 inputs = []
                 outputs = []
@@ -188,7 +172,6 @@ def val_data_generator(val_idx, batch_size, validation_steps):
                 img0= cv2.resize(img0, origin_shape)
             else:
                 img0 = img0
-            # rgb_index = [i for i in range(channel_no)]
             if channel_no == 8:img0 = img0
             else:
                 band_index = rgb_index
@@ -205,6 +188,8 @@ def val_data_generator(val_idx, batch_size, validation_steps):
                     inputs = np.asarray(inputs)
                     outputs = np.asarray(outputs, dtype='float')
                     inputs = preprocess_inputs_std(inputs, means, stds)
+                    print(inputs.shape, outputs.shape)
+                    print(np.unique(inputs))
                     yield inputs, outputs
                     inputs = []
                     outputs = []

@@ -123,7 +123,7 @@ def get_inception_resnet_v2_unet(input_shape,channel_no, weights='imagenet'):
     model = Model(inp, res)
 
     if weights == 'imagenet':
-        inception_resnet_v2 = InceptionResNetV2(weights=weights, include_top=False, input_shape=input_shape + (channel_no,))
+        inception_resnet_v2 = InceptionResNetV2(weights=weights, include_top=False, input_shape=input_shape + (3,))
         for i in range(2, len(inception_resnet_v2.layers)-1):
             model.layers[i].set_weights(inception_resnet_v2.layers[i].get_weights())
             model.layers[i].trainable = False
