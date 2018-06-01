@@ -39,7 +39,7 @@ def stats_data(data):
     else:
         means = np.mean(data, axis = (0, 1))
         stds = np.std(data, axis = (0, 1))
-    # print(means)
+    print(means)
     return means, stds
 #
 # def stds_data(data):
@@ -60,8 +60,7 @@ def color_scale(arr):
     return str_arr
 
 def open_image(fn):
-    arr = skimage.io.imread(fn, plugin='tifffile')
-    #np.array(Image.open(fn))
+    arr = skimage.io.imread(fn, plugin='tifffile').astype('float32')
     img = color_scale(arr)
     return img
 
@@ -76,15 +75,7 @@ def cache_stats(imgs_folder):
             img_ = np.expand_dims(img, axis=0)
             imgs.append(img)
     imgs_arr = np.array(imgs)
-    # print(imgs_arr.shape)
-    # all_arr = []
-    # for i in all_files:
-    #     img = open_image(all_files[i])
-    #     all_arr.append(img)
-    # imgs_arr_ = np.array(imgs_arr)
-    # imgs_arr = np.stack(open_image(fn) for fn in all_files)
     dt_means, dt_stds = stats_data(imgs_arr)
-    # stds = stds_data(imgs_arr)
     print("mean for the dataset is {}".format(dt_means))
     print("Std for the dataset is {}".format(dt_stds))
     return dt_means,dt_stds
