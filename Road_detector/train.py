@@ -67,6 +67,7 @@ for all_train_idx, all_val_idx in kf.split(all_files):
     np.random.seed(11)
     random.seed(11)
     tf.set_random_seed(11)
+    print(model.summary())
 
 
     model.compile(loss=dice_logloss3,
