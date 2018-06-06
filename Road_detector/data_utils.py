@@ -58,7 +58,7 @@ def open_image(fn):
 def cache_stats(imgs_folder):
     imgs = []
     for f in listdir(path.join(imgs_folder)):
-        format = set(dataformat(f))
+        format = dataformat(f)
         if path.isfile(path.join(imgs_folder, f)) and str(format) in f:
             fpath = path.join(imgs_folder, f)
             img = open_image(fpath)
