@@ -1,3 +1,13 @@
+#!/usr/bin/python
+"""
+use:
+python train.py --model_id resnet_unet \
+                --img_dir Road_detector/wdata/AOI_3_Paris_Roads_Train/RGB-PanSharpen \
+                --label_dir Road_detector/wdata/AOI_3_Paris_Roads_Train/masks_smallest \
+                --output_path predictions
+
+"""
+
 import os
 import sys
 from os import path, listdir, mkdir
@@ -337,10 +347,11 @@ if __name__=="__main__":
     t0 = timeit.default_timer()
     all_files, all_masks = datafiles()
     means, stds = cache_stats(imgs_folder)
-    input_shape = (320, 320)
+    channel_no = 3
+    input_shape = (250, 250)
     rgb_index = [0, 1, 2]
     batch_size = 16
-    origin_shape = (325, 325)
+    origin_shape = (256, 256)
     cli()
     elapsed = timeit.default_timer() - t0
     print('Time: {:.3f} min'.format(elapsed / 60))
