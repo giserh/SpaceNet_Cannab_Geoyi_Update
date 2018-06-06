@@ -26,6 +26,13 @@ img_head = 'RGB-PanSharpen_'
 
 rgb_index = [0, 1, 2]
 
+def dataformat(fn):
+    basename, ext = os.path.splitext(os.path.basename(fn))
+    if ext == 'tif':
+        return '.tif'
+    elif ext == '.png':
+        return 'png'
+    else: return None
 
 def stats_data(data):
     if len(data.shape) > 3:
@@ -44,14 +51,19 @@ def color_scale(arr):
     return str_arr
 
 def open_image(fn):
-    arr = skimage.io.imread(fn, plugin='tifffile').astype('float32')
+    format = dataformat(fn)
+    if format == '.tif':
+        arr = skimage.io.imread(fn, plugin='tifffile').astype('float32')
+    else:
+        arr = skimage.io.imread(fn).astype('float32')
     img = color_scale(arr)
     return img
 
 def cache_stats(imgs_folder):
     imgs = []
     for f in listdir(path.join(imgs_folder)):
-        if path.isfile(path.join(imgs_folder, f)) and '.tif' in f:
+        format = set(dataformat(f))
+        if path.isfile(path.join(imgs_folder, f)) and format in f:
             fpath = path.join(imgs_folder, f)
             img = open_image(fpath)
             img_ = np.expand_dims(img, axis=0)
