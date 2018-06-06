@@ -110,7 +110,7 @@ def datafiles(img_head):
 
 
 def rotate_image(image, angle, scale):
-    all_files,all_masks = datafiles()
+    all_files,all_masks = datafiles(img_head)
     image_center = tuple(np.array(image.shape[:2])/2)
     rot_mat = cv2.getRotationMatrix2D(image_center, angle, scale)
     result = cv2.warpAffine(image, rot_mat, image.shape[:2],flags=cv2.INTER_LINEAR)
@@ -119,7 +119,7 @@ def rotate_image(image, angle, scale):
  # = cache_stats(imgs_folder)
 
 def batch_data_generator(train_idx, batch_size,rgb_index):
-    all_files, all_masks = datafiles()
+    all_files, all_masks = datafiles(img_head)
     inputs = []
     outputs = []
     while True:
@@ -171,7 +171,7 @@ def batch_data_generator(train_idx, batch_size,rgb_index):
                 outputs = []
 
 def val_data_generator(val_idx, batch_size, validation_steps):
-    all_files,all_masks = datafiles()
+    all_files,all_masks = datafiles(img_head)
     while True:
         inputs = []
         outputs = []
@@ -345,7 +345,8 @@ def cli():
 
 if __name__=="__main__":
     t0 = timeit.default_timer()
-    all_files, all_masks = datafiles()
+    img_head = 'RGB-PanSharpen_'
+    all_files, all_masks = datafiles(img_head)
     means, stds = cache_stats(imgs_folder)
     channel_no = 3
     input_shape = (250, 250)
