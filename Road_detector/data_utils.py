@@ -27,12 +27,8 @@ img_head = 'RGB-PanSharpen_'
 rgb_index = [0, 1, 2]
 
 def dataformat(fn):
-    basename, ext = os.path.splitext(os.path.basename(fn))
-    if ext == 'tif':
-        return '.tif'
-    elif ext == '.png':
-        return 'png'
-    else: return None
+    basename, ext = os.path.splitext(fn)
+    return '.{}'.format(ext)
 
 def stats_data(data):
     if len(data.shape) > 3:
@@ -41,7 +37,7 @@ def stats_data(data):
     else:
         means = np.mean(data, axis = (0, 1))
         stds = np.std(data, axis = (0, 1))
-    print(means)
+    # print(means)
     return means, stds
 
 def color_scale(arr):
@@ -63,7 +59,7 @@ def cache_stats(imgs_folder):
     imgs = []
     for f in listdir(path.join(imgs_folder)):
         format = set(dataformat(f))
-        if path.isfile(path.join(imgs_folder, f)) and format in f:
+        if path.isfile(path.join(imgs_folder, f)) and str(format) in f:
             fpath = path.join(imgs_folder, f)
             img = open_image(fpath)
             img_ = np.expand_dims(img, axis=0)
@@ -193,8 +189,8 @@ def val_data_generator(val_idx, batch_size, validation_steps, means, stds):
                     inputs = np.asarray(inputs)
                     outputs = np.asarray(outputs, dtype='float')
                     inputs = preprocess_inputs_std(inputs, means, stds)
-                    print(inputs.shape, outputs.shape)
-                    print(np.unique(inputs))
+                    # print(inputs.shape, outputs.shape)
+                    # print(np.unique(inputs))
                     yield inputs, outputs
                     inputs = []
                     outputs = []
