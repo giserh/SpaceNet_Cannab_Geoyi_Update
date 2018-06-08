@@ -28,7 +28,7 @@ rgb_index = [0, 1, 2]
 
 def dataformat(fn):
     basename, ext = os.path.splitext(fn)
-    return '.{}'.format(ext)
+    return ext
 
 def stats_data(data):
     if len(data.shape) > 3:
