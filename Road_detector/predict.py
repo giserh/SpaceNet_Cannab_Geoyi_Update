@@ -16,17 +16,17 @@ from tqdm import tqdm
 from data_utils import stats_data, open_image, preprocess_inputs_std, datafiles, cache_stats
 np.seterr(divide='ignore', invalid='ignore')
 
-input_shape = (352, 352)
 # input_shape for the prediction is inputshape[0] + 14 + 13
-origin_shape = (325, 325)
-border = (13, 14)
+origin_shape = (256, 256)
+border = (32, 32)
+input_shape = (origin_shape[0] + border[0] + border[1] , origin_shape[1] + border[0] + border[1])
 
 channel_no = 3
-img_head = 'RGB-PanSharpen_'
+# img_head = 'RGB-PanSharpen_'
 rgb_index = [0, 1, 2]
-pred_folder = 'wdata/predictions'
+pred_folder = 'wdata/predictions_seattle_out'
 
-model_name = 'resnet_NEW_TRAIN'
+model_name = 'resnet'
 model_id = sys.argv[1]
 imgs_folder = sys.argv[2]
 masks_folder = sys.argv[3]
@@ -62,18 +62,18 @@ if __name__ == '__main__':
 
     for f in tqdm(sorted(listdir(path.join(imgs_folder)))):
         if path.isfile(path.join(imgs_folder, f)) and '.tif' in f:
-            img_id = f.split(img_head)[1].split('.')[0]
+            img_id = f.split('.')[0]
 
             fpath = path.join(imgs_folder, f)
             img = open_image(fpath)
-            if img.shape[0] != origin_shape[0]:
-                img= cv2.resize(img, origin_shape)
-            else:img = img
+            # if img.shape[0] != origin_shape[0]:
+            #     img= cv2.resize(img, origin_shape)
+            # else:img = img
             if channel_no == 8:img = img
             else:
                 band_index = rgb_index
                 img = img[:, :, band_index]
-            img = cv2.copyMakeBorder(img, 13, 14, 13, 14, cv2.BORDER_REFLECT_101)
+            img = cv2.copyMakeBorder(img, border[0], border[1], border[0], border[1], cv2.BORDER_REFLECT_101)
             inp = []
             inp.append(img)
             inp.append(np.rot90(img, k=1))
@@ -82,10 +82,11 @@ if __name__ == '__main__':
             pred = model.predict(inp)
             mask = pred[0] + np.rot90(pred[1], k=3)
             mask /= 2
-            mask = mask[13:338, 13:338, ...]
+            mask_index1 = border[0]
+            mask_index2 = input_shape[1] - border[1]
+            mask = mask[mask_index1:mask_index2, mask_index1:mask_index2, ...]
             mask = mask * 255
             mask = mask.astype('uint8')
             cv2.imwrite(path.join(pred_folder, model_name,'{}.png'.format(img_id)), mask, [cv2.IMWRITE_PNG_COMPRESSION, 9])
-
 elapsed = timeit.default_timer() - t0
 print('Time: {:.3f} min'.format(elapsed / 60))
